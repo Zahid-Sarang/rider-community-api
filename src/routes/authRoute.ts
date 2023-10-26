@@ -9,6 +9,8 @@ import registerValidators from "../validators/register-validators";
 import { TokenService } from "../services/TokenService";
 import loginValidators from "../validators/login-validators";
 import { CredentialService } from "../services/CredentialService";
+import authMiddleware from "../middlewares/authMiddleware";
+import { AuthRequest } from "../types";
 
 const authRouter = express.Router();
 const userRepository = AppDataSource.getRepository(User);
@@ -26,6 +28,10 @@ authRouter.post(
 
 authRouter.post("/login", loginValidators, (req: Request, res: Response, next: NextFunction) =>
     authController.login(req, res, next),
+);
+
+authRouter.get("/self", authMiddleware, (req: Request, res: Response) =>
+    authController.self(req as AuthRequest, res),
 );
 
 export default authRouter;
