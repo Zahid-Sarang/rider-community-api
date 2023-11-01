@@ -109,6 +109,7 @@ export class AuthController {
             // generate token
             const payload: JwtPayload = {
                 sub: String(user.id),
+                email: user.email,
             };
 
             const accessToken = this.tokenService.generateAccessToken(payload);
@@ -148,5 +149,54 @@ export class AuthController {
     async self(req: AuthRequest, res: Response) {
         const user = await this.userService.findById(Number(req.auth.sub));
         res.json({ ...user, password: undefined });
+    }
+
+    async refresh(req: AuthRequest, res: Response, next: NextFunction) {
+        try {
+            const payload: JwtPayload = {
+                sub: req.auth.sub,
+                email: req.auth.email,
+            };
+
+            const accessToken = this.tokenService.generateAccessToken(payload);
+
+            // Find the user by Id
+            const user = await this.userService.findById(Number(req.auth.sub));
+            if (!user) {
+                const error = createHttpError(400, "User with token could not find");
+                next(error);
+                return;
+            }
+
+            const newRefreshToken = await this.tokenService.persistRefreshToken(user);
+
+            // Delet Old Refresh Token
+            await this.tokenService.deleteRefreshToken(Number(req.auth.id));
+
+            const refreshToken = this.tokenService.generateRefreshToken({
+                ...payload,
+                id: String(newRefreshToken.id),
+            });
+
+            res.cookie("accessToken", accessToken, {
+                domain: "localhost",
+                sameSite: "strict",
+                maxAge: 1000 * 60 * 60,
+                httpOnly: true,
+            });
+
+            res.cookie("refreshToken", refreshToken, {
+                domain: "localhost",
+                sameSite: "strict",
+                maxAge: 1000 * 60 * 60 * 24 * 365,
+                httpOnly: true,
+            });
+            this.logger.info("new refresh token generated for", req.auth.sub);
+
+            res.json();
+        } catch (err) {
+            next(err);
+            return;
+        }
     }
 }
