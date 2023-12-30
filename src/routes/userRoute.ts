@@ -17,27 +17,35 @@ const userService = new UserService(userRepository);
 const refreshToken = AppDataSource.getRepository(RefreshToken);
 const tokenService = new TokenService(refreshToken);
 
-const userContoller = new UserController(userService, logger, tokenService);
+const userContoller = new UserController(userService, logger);
 
 userRouter.get(
     "/",
-    authMiddleware,
+    authMiddleware as RequestHandler,
     (req: Request, res: Response, next: NextFunction) =>
         userContoller.getUsers(req, res, next) as unknown as RequestHandler,
 );
 
 userRouter.get(
     "/:id",
-    authMiddleware,
+    authMiddleware as RequestHandler,
     (req: Request, res: Response, next: NextFunction) =>
         userContoller.getOneUser(req, res, next) as unknown as RequestHandler,
 );
 
 userRouter.patch(
     "/:id",
-    authMiddleware,
+    authMiddleware as RequestHandler,
     updateUserValidators,
     (req: UpdateUserRequest, res: Response, next: NextFunction) =>
         userContoller.updateUser(req, res, next) as unknown as RequestHandler,
+);
+
+userRouter.delete(
+    "/:id",
+    authMiddleware as RequestHandler,
+    updateUserValidators,
+    (req: Request, res: Response, next: NextFunction) =>
+        userContoller.deleteUser(req, res, next) as unknown as RequestHandler,
 );
 export default userRouter;

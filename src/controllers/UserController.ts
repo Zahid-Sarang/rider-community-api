@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
 import createHttpError from "http-errors";
 import { Logger } from "winston";
-import { TokenService } from "../services/TokenService";
 import { UserService } from "../services/UserService";
 import { UpdateUserRequest } from "../types";
 
@@ -10,7 +9,6 @@ export class UserController {
     constructor(
         private userService: UserService,
         private logger: Logger,
-        private tokenService: TokenService,
     ) {}
     async getUsers(req: Request, res: Response, next: NextFunction) {
         try {
@@ -77,6 +75,24 @@ export class UserController {
                 bikeDetails,
             });
             res.json({ message: "user updated!" });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async deleteUser(req: Request, res: Response, next: NextFunction) {
+        const userId = req.params.id;
+        if (isNaN(Number(userId))) {
+            next(createHttpError(400, "Invalid url param!"));
+            return;
+        }
+        try {
+            // Delet the user
+            await this.userService.deleteById(Number(userId));
+            this.logger.info("User has been deleted!", {
+                id: Number(userId),
+            });
+            res.json({ message: "User has been Deleted" });
         } catch (error) {
             next(error);
         }
