@@ -33,3 +33,18 @@ export type AuthCookie = {
 export interface IRefreshTokenPayload {
     id: string;
 }
+
+export interface LimitedUserData {
+    firstName: string;
+    lastName: string;
+    userName: string;
+    profilePhoto?: string;
+    coverPhoto?: string;
+    bio?: string;
+    location?: string;
+    bikeDetails?: string;
+}
+
+export interface UpdateUserRequest extends Request {
+    body: LimitedUserData;
+}

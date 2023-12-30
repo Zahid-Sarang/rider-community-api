@@ -8,6 +8,8 @@ import { User } from "../entity/User";
 import authMiddleware from "../middlewares/authMiddleware";
 import { TokenService } from "../services/TokenService";
 import { UserService } from "../services/UserService";
+import { UpdateUserRequest } from "../types";
+import updateUserValidators from "../validators/update-user-validators";
 
 const userRouter = express.Router();
 const userRepository = AppDataSource.getRepository(User);
@@ -29,5 +31,13 @@ userRouter.get(
     authMiddleware,
     (req: Request, res: Response, next: NextFunction) =>
         userContoller.getOneUser(req, res, next) as unknown as RequestHandler,
+);
+
+userRouter.patch(
+    "/:id",
+    authMiddleware,
+    updateUserValidators,
+    (req: UpdateUserRequest, res: Response, next: NextFunction) =>
+        userContoller.updateUser(req, res, next) as unknown as RequestHandler,
 );
 export default userRouter;
