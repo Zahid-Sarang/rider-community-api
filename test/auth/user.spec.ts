@@ -69,7 +69,7 @@ describe("POST /auth/login", () => {
             expect((response.body as Record<string, string>).id).toBe(data.id);
         });
 
-        it("should not return passwors d field ", async () => {
+        it("should not return password field ", async () => {
             // Arrange
             // Register user
             const userData = {

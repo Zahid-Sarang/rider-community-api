@@ -9,7 +9,7 @@ const app = express();
 app.use(express.static("public"));
 const corsOptions = {
     credentials: true,
-    origin: "http://localhost:3000",
+    origin: "http://localhost:5173",
 };
 app.use(cors(corsOptions));
 app.use(cookieParser());

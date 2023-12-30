@@ -1,9 +1,18 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+    Column,
+    Entity,
+    PrimaryGeneratedColumn,
+    CreateDateColumn,
+    UpdateDateColumn,
+} from "typeorm";
 
-@Entity()
+@Entity({ name: "users" })
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Column()
+    username: string;
 
     @Column()
     firstName: string;
@@ -16,4 +25,25 @@ export class User {
 
     @Column()
     password: string;
+
+    @Column({ nullable: true })
+    profilePhoto: string;
+
+    @Column({ nullable: true })
+    coverPhoto: string;
+
+    @Column({ nullable: true })
+    bio: string;
+
+    @Column({ nullable: true })
+    location: string;
+
+    @Column({ nullable: true })
+    bikeDetails: string;
+
+    @CreateDateColumn()
+    joinDate: Date;
+
+    @UpdateDateColumn()
+    lastActive: Date;
 }
