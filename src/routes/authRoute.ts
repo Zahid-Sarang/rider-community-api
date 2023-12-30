@@ -51,4 +51,6 @@ authRouter.post(
         authController.logout(req as AuthRequest, res, next),
 );
 
+
+
 export default authRouter;
