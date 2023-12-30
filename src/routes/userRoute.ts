@@ -24,4 +24,10 @@ userRouter.get(
         userContoller.getUsers(req, res, next) as unknown as RequestHandler,
 );
 
+userRouter.get(
+    "/:id",
+    authMiddleware,
+    (req: Request, res: Response, next: NextFunction) =>
+        userContoller.getOneUser(req, res, next) as unknown as RequestHandler,
+);
 export default userRouter;
