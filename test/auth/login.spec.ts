@@ -26,6 +26,7 @@ describe("POST /auth/login", () => {
         it("should return 200 status code", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "zahid",
                 lastName: "sarang",
                 email: "zahid@gmail.com",
@@ -60,6 +61,7 @@ describe("POST /auth/login", () => {
         it("should return a 400 if email and password is invalid", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "zahid",
                 lastName: "sarang",
                 email: "zahid@gmail.com",
@@ -85,6 +87,7 @@ describe("POST /auth/login", () => {
         it("should return user id ", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "zahid",
                 lastName: "sarang",
                 email: "zahid@gmail.com",
@@ -107,6 +110,7 @@ describe("POST /auth/login", () => {
         it("should return the access token and refresh token in a cookie ", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "zahid",
                 lastName: "sarang",
                 email: "zahid@gmail.com",
@@ -146,6 +150,7 @@ describe("POST /auth/login", () => {
         it("should store the refresh token in the database", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "zahid",
                 lastName: "sarang",
                 email: "zahid@gmail.com",
@@ -176,6 +181,7 @@ describe("POST /auth/login", () => {
         it("should return a 400 status code if email is missing", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "zahid",
                 lastName: "sarang",
                 email: "zahid@gmail.com",
@@ -196,6 +202,7 @@ describe("POST /auth/login", () => {
         it("should return a 400 status code if password is missing", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "zahid",
                 lastName: "sarang",
                 email: "zahid@gmail.com",

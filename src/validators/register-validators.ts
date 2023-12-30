@@ -9,6 +9,11 @@ export default checkSchema({
             errorMessage: "Email should be a valid email",
         },
     },
+    userName: {
+        errorMessage: "user Name is required!",
+        notEmpty: true,
+        trim: true,
+    },
     firstName: {
         errorMessage: "First name is required!",
         notEmpty: true,

@@ -39,8 +39,9 @@ export class AuthController {
             return res.status(400).json({ errors: validationErrors.array() });
         }
 
-        const { firstName, lastName, email, password } = req.body;
+        const { firstName, lastName, email, password, userName } = req.body;
         this.logger.debug("New request to register a user: ", {
+            userName,
             firstName,
             lastName,
             email,
@@ -48,6 +49,7 @@ export class AuthController {
         });
         try {
             const user = await this.userService.createUser({
+                userName,
                 firstName,
                 lastName,
                 email,

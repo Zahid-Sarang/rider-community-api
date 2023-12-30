@@ -45,6 +45,7 @@ describe("POST /auth/login", () => {
             // Arrange
             // Register user
             const userData = {
+                userName: "john_doe",
                 firstName: "zahid",
                 lastName: "sarang",
                 email: "zahid@gmail.com",
@@ -73,6 +74,7 @@ describe("POST /auth/login", () => {
             // Arrange
             // Register user
             const userData = {
+                userName: "john_doe",
                 firstName: "zahid",
                 lastName: "sarang",
                 email: "zahid@gmail.com",
@@ -101,6 +103,7 @@ describe("POST /auth/login", () => {
             // Arrange
             // Register user
             const userData = {
+                userName: "john_doe",
                 firstName: "zahid",
                 lastName: "sarang",
                 email: "zahid@gmail.com",

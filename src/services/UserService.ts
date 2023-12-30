@@ -6,7 +6,7 @@ import createHttpError from "http-errors";
 
 export class UserService {
     constructor(private userRepository: Repository<User>) {}
-    async createUser({ firstName, lastName, email, password }: UserData) {
+    async createUser({ firstName, lastName, email, password, userName }: UserData) {
         // Check if user already exists
         const userEmail = await this.userRepository.findOne({
             where: { email: email },
@@ -20,6 +20,7 @@ export class UserService {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         try {
             return await this.userRepository.save({
+                userName,
                 firstName,
                 lastName,
                 email,

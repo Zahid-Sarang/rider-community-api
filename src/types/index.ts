@@ -5,6 +5,12 @@ export interface UserData {
     lastName: string;
     email: string;
     password: string;
+    userName: string;
+    profilePhoto?: string | null;
+    coverPhoto?: string | null;
+    bio?: string | null;
+    location?: string | null;
+    bikeDetails?: string | null;
 }
 
 export interface RegisterUserRequest extends Request {

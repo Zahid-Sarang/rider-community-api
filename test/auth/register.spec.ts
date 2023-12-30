@@ -27,6 +27,7 @@ describe("POST /auth/register", () => {
         it("should return the 201 status code", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "Zahid",
                 lastName: "Sarang",
                 email: "zahidSarang@gmail.com",
@@ -41,6 +42,7 @@ describe("POST /auth/register", () => {
         it("should return a valid json object", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "Zahid",
                 lastName: "Sarang",
                 email: "zahidSarang@gmail.com",
@@ -58,6 +60,7 @@ describe("POST /auth/register", () => {
         it("should persist the user in database", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "Zahid",
                 lastName: "Sarang",
                 email: "zahidSarang@gmail.com",
@@ -78,6 +81,7 @@ describe("POST /auth/register", () => {
         it("should return the created user Id", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "Zahid",
                 lastName: "Sarang",
                 email: "zahidSarang@gmail.com",
@@ -96,6 +100,7 @@ describe("POST /auth/register", () => {
         it("should store the hashed password in database", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "Zahid",
                 lastName: "Sarang",
                 email: "zahidSarang@gmail.com",
@@ -115,6 +120,7 @@ describe("POST /auth/register", () => {
         it("should return 400 if email is already exists", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "Zahid",
                 lastName: "Sarang",
                 email: "zahidSarang@gmail.com",
@@ -134,6 +140,7 @@ describe("POST /auth/register", () => {
         it("should return the access token and refresh token inside a cookie", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "zahid",
                 lastName: "sarang",
                 email: "zahid@gmail.com",
@@ -166,6 +173,7 @@ describe("POST /auth/register", () => {
         it("should store the refresh token in the database", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "zahid",
                 lastName: "sarang",
                 email: "zahid@gmail.com",
@@ -190,6 +198,7 @@ describe("POST /auth/register", () => {
     describe("Fileds are missing", () => {
         it("should return 400 status code if inputs fields are missing", async () => {
             const userData = {
+                userName: "john_doe",
                 firstName: "",
                 lastName: "Sarang",
                 email: "zahid@gmail.com",
@@ -207,6 +216,7 @@ describe("POST /auth/register", () => {
         it("should trim the email field", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "zahid",
                 lastName: "sarang",
                 email: " zahid95@gmail.com ",
@@ -225,6 +235,7 @@ describe("POST /auth/register", () => {
         it("should return 400 if  email is not a valid email", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "zahid",
                 lastName: "sarang",
                 email: "zahid_mern.space", // Invalid email
@@ -243,6 +254,7 @@ describe("POST /auth/register", () => {
         it("should return 400 if  password length is less than 8 character", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "zahid",
                 lastName: "sarang",
                 email: "zahidsarang@gmail.com", // Invalid email
@@ -261,6 +273,7 @@ describe("POST /auth/register", () => {
         it("should return an array of error message if email is missing", async () => {
             // Arrange
             const userData = {
+                userName: "john_doe",
                 firstName: "zahid",
                 lastName: "sarang",
                 email: "",
