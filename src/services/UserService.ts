@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import { User } from "../entity/User";
 import { LimitedUserData, UserData } from "../types";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import createHttpError from "http-errors";
 
 export class UserService {
@@ -35,6 +35,18 @@ export class UserService {
     async findByEmail(email: string) {
         return await this.userRepository.findOne({
             where: { email },
+            select: [
+                "id",
+                "firstName",
+                "lastName",
+                "userName",
+                "profilePhoto",
+                "password",
+                "coverPhoto",
+                "bio",
+                "location",
+                "bikeDetails",
+            ],
         });
     }
 
