@@ -38,7 +38,7 @@ export interface LimitedUserData {
     firstName: string;
     lastName: string;
     userName: string;
-    profilePhoto?: string;
+    profilePhoto?: string | undefined;
     coverPhoto?: string;
     bio?: string;
     location?: string;

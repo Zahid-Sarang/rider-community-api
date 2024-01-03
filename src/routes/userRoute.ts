@@ -6,6 +6,8 @@ import { UserController } from "../controllers/UserController";
 import { RefreshToken } from "../entity/RefreshToken";
 import { User } from "../entity/User";
 import authMiddleware from "../middlewares/authMiddleware";
+import { upload } from "../middlewares/multerMiddleware";
+import { CloudinaryService } from "../services/Cloudinary";
 import { TokenService } from "../services/TokenService";
 import { UserService } from "../services/UserService";
 import { UpdateUserRequest } from "../types";
@@ -15,9 +17,8 @@ const userRouter = express.Router();
 const userRepository = AppDataSource.getRepository(User);
 const userService = new UserService(userRepository);
 const refreshToken = AppDataSource.getRepository(RefreshToken);
-const tokenService = new TokenService(refreshToken);
-
-const userContoller = new UserController(userService, logger);
+const cloudinaryService = new CloudinaryService();
+const userContoller = new UserController(userService, logger, cloudinaryService);
 
 userRouter.get(
     "/",
@@ -35,6 +36,16 @@ userRouter.get(
 
 userRouter.patch(
     "/:id",
+    upload.fields([
+        {
+            name: "profilePhoto",
+            maxCount: 1,
+        },
+        {
+            name: "coverPhoto",
+            maxCount: 1,
+        },
+    ]),
     authMiddleware as RequestHandler,
     updateUserValidators,
     (req: UpdateUserRequest, res: Response, next: NextFunction) =>

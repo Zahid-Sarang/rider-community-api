@@ -12,6 +12,9 @@ const {
     DB_NAME,
     REFRESH_TOKEN_SECRET,
     JWKS_URI,
+    CLOUD_NAME,
+    API_KEY,
+    API_SECRET,
 } = process.env;
 
 export const Config = {
@@ -24,4 +27,7 @@ export const Config = {
     DB_NAME,
     REFRESH_TOKEN_SECRET,
     JWKS_URI,
+    CLOUD_NAME,
+    API_KEY,
+    API_SECRET,
 };

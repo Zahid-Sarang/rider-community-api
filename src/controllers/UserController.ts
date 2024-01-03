@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
 import createHttpError from "http-errors";
 import { Logger } from "winston";
+import { CloudinaryService } from "../services/Cloudinary";
 import { UserService } from "../services/UserService";
 import { UpdateUserRequest } from "../types";
 
@@ -9,6 +10,7 @@ export class UserController {
     constructor(
         private userService: UserService,
         private logger: Logger,
+        private cloudinaryService: CloudinaryService,
     ) {}
     async getUsers(req: Request, res: Response, next: NextFunction) {
         try {
@@ -44,16 +46,7 @@ export class UserController {
         if (!validationError.isEmpty()) {
             return res.status(400).json({ error: validationError.array() });
         }
-        const {
-            firstName,
-            lastName,
-            userName,
-            profilePhoto,
-            coverPhoto,
-            bio,
-            location,
-            bikeDetails,
-        } = req.body;
+        const { firstName, lastName, userName, bio, location, bikeDetails } = req.body;
 
         const userId = req.params.id;
 
@@ -63,13 +56,19 @@ export class UserController {
         }
 
         this.logger.debug("Request for updating a user", req.body);
+        const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+        const profileLocalPath = files?.profilePhoto[0]?.path;
+
+        // upload on cloudinary
+        const profilePhoto = await this.cloudinaryService.uploadFile(profileLocalPath);
+
         try {
-            const user = await this.userService.update(Number(userId), {
+            await this.userService.update(Number(userId), {
                 firstName,
                 lastName,
                 userName,
-                profilePhoto,
-                coverPhoto,
+                profilePhoto: profilePhoto.url,
+
                 bio,
                 location,
                 bikeDetails,
