@@ -57,18 +57,26 @@ export class UserController {
 
         this.logger.debug("Request for updating a user", req.body);
         const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-        const profileLocalPath = files?.profilePhoto[0]?.path;
+        const profileLocalPath = files?.profilePhoto?.[0]?.path;
+        const coverLocalPath = files?.coverPhoto?.[0]?.path;
 
-        // upload on cloudinary
-        const profilePhoto = await this.cloudinaryService.uploadFile(profileLocalPath);
+        // upload profile photo on cloudinary
+        const profilePhoto = profileLocalPath
+            ? await this.cloudinaryService.uploadFile(profileLocalPath)
+            : null;
+
+        // upload cover photo on cloudinary
+        const coverPhoto = coverLocalPath
+            ? await this.cloudinaryService.uploadFile(coverLocalPath)
+            : null;
 
         try {
             await this.userService.update(Number(userId), {
                 firstName,
                 lastName,
                 userName,
-                profilePhoto: profilePhoto.url,
-
+                profilePhoto: profilePhoto ? profilePhoto.url : "profileImages",
+                coverPhoto: coverPhoto ? coverPhoto.url : "coverImages",
                 bio,
                 location,
                 bikeDetails,

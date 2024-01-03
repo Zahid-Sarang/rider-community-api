@@ -26,11 +26,11 @@ export class User {
     @Column({ select: false })
     password: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: "varchar" })
     profilePhoto: string;
 
-    @Column({ nullable: true })
-    coverPhoto: string;
+    @Column({ nullable: true, type: "varchar" })
+    coverPhoto: string | null;
 
     @Column({ nullable: true })
     bio: string;
