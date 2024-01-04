@@ -40,6 +40,7 @@ export interface LimitedUserData {
     userName: string;
     profilePhoto?: string;
     coverPhoto?: string;
+    email?: string;
     bio?: string;
     location?: string;
     bikeDetails?: string;

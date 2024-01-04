@@ -46,12 +46,18 @@ export class UserController {
         if (!validationError.isEmpty()) {
             return res.status(400).json({ error: validationError.array() });
         }
-        const { firstName, lastName, userName, bio, location, bikeDetails } = req.body;
+        const { firstName, lastName, userName, bio, location, bikeDetails, email } = req.body;
 
         const userId = req.params.id;
 
         if (isNaN(Number(userId))) {
             next(createHttpError(400, "Invalid url param!"));
+            return;
+        }
+        const userMatch = await this.userService.findById(Number(userId));
+        if (userMatch?.email !== email) {
+            const error = createHttpError(400, "you can't update this user info");
+            next(error);
             return;
         }
 
