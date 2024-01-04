@@ -6,6 +6,7 @@ import { UserController } from "../controllers/UserController";
 import { RefreshToken } from "../entity/RefreshToken";
 import { User } from "../entity/User";
 import authMiddleware from "../middlewares/authMiddleware";
+import { canAccess } from "../middlewares/checkUserMiddleware";
 import { upload } from "../middlewares/multerMiddleware";
 import { CloudinaryService } from "../services/Cloudinary";
 import { TokenService } from "../services/TokenService";
@@ -47,6 +48,7 @@ userRouter.patch(
         },
     ]),
     authMiddleware as RequestHandler,
+    canAccess(),
     updateUserValidators,
     (req: UpdateUserRequest, res: Response, next: NextFunction) =>
         userContoller.updateUser(req, res, next) as unknown as RequestHandler,

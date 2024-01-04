@@ -54,13 +54,6 @@ export class UserController {
             next(createHttpError(400, "Invalid url param!"));
             return;
         }
-        const userMatch = await this.userService.findById(Number(userId));
-        if (userMatch?.email !== email) {
-            const error = createHttpError(400, "you can't update this user info");
-            next(error);
-            return;
-        }
-
         this.logger.debug("Request for updating a user", req.body);
         const files = req.files as { [fieldname: string]: Express.Multer.File[] };
         const profileLocalPath = files?.profilePhoto?.[0]?.path;
