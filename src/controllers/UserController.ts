@@ -42,10 +42,12 @@ export class UserController {
         }
     }
     async updateUser(req: UpdateUserRequest, res: Response, next: NextFunction) {
+
         const validationError = validationResult(req);
         if (!validationError.isEmpty()) {
             return res.status(400).json({ error: validationError.array() });
         }
+
         const { firstName, lastName, userName, bio, location, bikeDetails, email } = req.body;
 
         const userId = req.params.id;
@@ -54,7 +56,9 @@ export class UserController {
             next(createHttpError(400, "Invalid url param!"));
             return;
         }
+        
         this.logger.debug("Request for updating a user", req.body);
+        
         const files = req.files as { [fieldname: string]: Express.Multer.File[] };
         const profileLocalPath = files?.profilePhoto?.[0]?.path;
         const coverLocalPath = files?.coverPhoto?.[0]?.path;

@@ -25,7 +25,7 @@ export default checkSchema({
             options: (value, { req }) => {
                 // Custom validation for image file (you can implement your own logic here)
                 if (value) {
-                    const allowedExtensions = ["jpg", "jpeg", "png", "gif"];
+                    const allowedExtensions = ["jpg", "jpeg", "png", "gif", "svg"];
                     const fileExtension = value.split(".").pop().toLowerCase();
                     return allowedExtensions.includes(fileExtension);
                 }
@@ -40,7 +40,7 @@ export default checkSchema({
             options: (value, { req }) => {
                 // Custom validation for image file (you can implement your own logic here)
                 if (value) {
-                    const allowedExtensions = ["jpg", "jpeg", "png", "gif"];
+                    const allowedExtensions = ["jpg", "jpeg", "png", "gif", "svg"];
                     const fileExtension = value.split(".").pop().toLowerCase();
                     return allowedExtensions.includes(fileExtension);
                 }
