@@ -54,8 +54,8 @@ export interface ItineraryData {
     tripTitle: string;
     tripDescription: string;
     tripDuration: string;
-    startDateTime: string; // Assuming ISO 8601 format (e.g., "2024-01-15T08:00:00Z")
-    endDateTime: string; // Assuming ISO 8601 format (e.g., "2024-01-20T18:00:00Z")
+    startDateTime: string;
+    endDateTime: string;
     startPoint: string;
     endingPoint: string;
     destinationImage: string;
@@ -63,5 +63,5 @@ export interface ItineraryData {
 }
 
 export interface ItineraryRequestData extends Request {
-    boday: ItineraryData;
+    body: ItineraryData;
 }

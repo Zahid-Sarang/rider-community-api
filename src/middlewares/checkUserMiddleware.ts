@@ -6,7 +6,6 @@ export const canAccess = () => {
     return (req: Request, res: Response, next: NextFunction) => {
         const _req = req as AuthRequest;
         const userId = _req.auth.sub;
-        console.log(userId);
         if (userId !== req.params.id) {
             const error = createHttpError(400, "you can't update this user info");
             next(error);

@@ -48,7 +48,7 @@ export class UserController {
             return res.status(400).json({ error: validationError.array() });
         }
 
-        const { firstName, lastName, userName, bio, location, bikeDetails, email } = req.body;
+        const { firstName, lastName, userName, bio, location, bikeDetails } = req.body;
 
         const userId = req.params.id;
 
