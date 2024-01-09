@@ -24,4 +24,11 @@ itineraryRouter.post(
         itineraryController.createItinerary(req, res, next),
 );
 
+itineraryRouter.get(
+    "/",
+    authMiddleware as RequestHandler,
+    (req: Request, res: Response, next: NextFunction) =>
+        itineraryController.getAllItinerary(req, res, next),
+);
+
 export default itineraryRouter;

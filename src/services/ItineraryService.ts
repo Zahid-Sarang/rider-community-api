@@ -27,11 +27,19 @@ export class ItineraryService {
                 startPoint,
                 endingPoint,
                 destinationImage,
-                userId,
+                user: { id: userId },
             });
         } catch (err) {
             const error = createHttpError(500, "Failed to create itinerary!");
             throw error;
         }
+    }
+
+    async getItinerary() {
+        return this.itineraryRepository.find({
+            relations: {
+                user: true,
+            },
+        });
     }
 }

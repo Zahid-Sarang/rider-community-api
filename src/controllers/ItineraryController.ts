@@ -58,4 +58,13 @@ export class ItineraryController {
             next(error);
         }
     }
+
+    async getAllItinerary(req: Request, res: Response, next: NextFunction) {
+        try {
+            const itineraries = await this.itineraryService.getItinerary();
+            res.json(itineraries);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
