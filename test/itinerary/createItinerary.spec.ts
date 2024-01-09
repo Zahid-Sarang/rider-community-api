@@ -10,6 +10,7 @@ import path from "path";
 describe("POST/itinerary", () => {
     let connection: DataSource;
     let jwks: ReturnType<typeof createJWKSMock>;
+    let accessToken: string;
 
     beforeAll(async () => {
         jwks = createJWKSMock("http://localhost:8003");
@@ -20,6 +21,10 @@ describe("POST/itinerary", () => {
         jwks.start();
         await connection.dropDatabase();
         await connection.synchronize();
+
+        accessToken = jwks.token({
+            sub: "1",
+        });
     });
 
     afterEach(() => {
@@ -32,37 +37,23 @@ describe("POST/itinerary", () => {
 
     describe.skip("Given all fields", () => {
         it("should return 201 status code", async () => {
-            //  Token generate
-            const accessToken = jwks.token({
-                sub: "1",
-            });
-
             // send request
+            const filePath = path.join(__dirname, "image/destination.jpg");
+            console.log("path", filePath);
             const response = await request(app)
                 .post("/itinerary")
                 .set("Cookie", [`accessToken=${accessToken}`])
-                .send();
+                .field("tripTitle", "Your Trip Title")
+                .field("tripDescription", "Your Trip Description")
+                .field("tripDuration", "Your Trip Duration")
+                .field("startDateTime", "Your Start Date and Time")
+                .field("endDateTime", "Your End Date and Time")
+                .field("startPoint", "Your Start Point")
+                .field("endingPoint", "Your Ending Point")
+                .field("userId", 123) // Replace with the actual user ID
+                .attach("destinationImage", filePath); // Attach the image with the field name
 
             expect(response.statusCode).toBe(201);
-        });
-        it("should return a valid json object", async () => {
-            //  Token generate
-            const accessToken = jwks.token({
-                sub: "1",
-            });
-
-            // send request
-            const response = await request(app)
-                .post("/itinerary")
-                .set("Cookie", [`accessToken=${accessToken}`])
-                .send();
-
-            expect((response.headers as Record<string, string>)["content-type"]).toEqual(
-                expect.stringContaining("json"),
-            );
-        });
-        it("should persist the itinerary data in database", async () => {
-            
         });
     });
 });

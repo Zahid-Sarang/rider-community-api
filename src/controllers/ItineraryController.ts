@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { validationResult } from "express-validator";
 import createHttpError from "http-errors";
 import { Logger } from "winston";
 import { CloudinaryService } from "../services/Cloudinary";
@@ -13,6 +14,11 @@ export class ItineraryController {
     ) {}
 
     async createItinerary(req: ItineraryRequestData, res: Response, next: NextFunction) {
+        // Validation
+        const validationError = validationResult(req);
+        if (!validationError.isEmpty()) {
+            return res.status(400).json({ errors: validationError.array() });
+        }
         const {
             tripTitle,
             tripDescription,
@@ -23,30 +29,33 @@ export class ItineraryController {
             endingPoint,
             userId,
         } = req.body;
-
-        console.log(req.file);
         const destinationImagelocalPath = req.file?.path;
 
-        console.log(destinationImagelocalPath);
-
+        // validate image path
         if (!destinationImagelocalPath) {
             return next(createHttpError(400, "Please Upload Image"));
         }
+        try {
+            // upload image on Cloudinary
+            const destinationImage =
+                await this.cloudinaryService.uploadFile(destinationImagelocalPath);
 
-        const destinationImage = await this.cloudinaryService.uploadFile(destinationImagelocalPath);
+            // store data in database
+            await this.itineraryService.createItinerary({
+                tripTitle,
+                tripDescription,
+                tripDuration,
+                startDateTime,
+                endDateTime,
+                startPoint,
+                endingPoint,
+                destinationImage: destinationImage.url,
+                userId,
+            });
 
-        const itinerary = await this.itineraryService.createItinerary({
-            tripTitle,
-            tripDescription,
-            tripDuration,
-            startDateTime,
-            endDateTime,
-            startPoint,
-            endingPoint,
-            destinationImage: destinationImage.url,
-            userId,
-        });
-
-        res.status(201).json({ message: "Itinerary Created SuccessFully!" });
+            res.status(201).json({ message: "Itinerary Created SuccessFully!" });
+        } catch (error) {
+            next(error);
+        }
     }
 }

@@ -7,6 +7,7 @@ import authMiddleware from "../middlewares/authMiddleware";
 import { upload } from "../middlewares/multerMiddleware";
 import { CloudinaryService } from "../services/Cloudinary";
 import { ItineraryService } from "../services/ItineraryService";
+import itineraryValidators from "../validators/itinerary-validators";
 
 const itineraryRouter = express.Router();
 const cloudinaryService = new CloudinaryService();
@@ -18,6 +19,7 @@ itineraryRouter.post(
     "/",
     upload.single("destinationImage"),
     authMiddleware as RequestHandler,
+    itineraryValidators,
     (req: Request, res: Response, next: NextFunction) =>
         itineraryController.createItinerary(req, res, next),
 );
