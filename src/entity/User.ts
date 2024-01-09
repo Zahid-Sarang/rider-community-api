@@ -4,7 +4,9 @@ import {
     PrimaryGeneratedColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    OneToMany,
 } from "typeorm";
+import { Itinerary } from "./Itinerary";
 
 @Entity({ name: "users" })
 export class User {
@@ -40,6 +42,9 @@ export class User {
 
     @Column({ nullable: true })
     bikeDetails: string;
+
+    @OneToMany(() => Itinerary, (itinerary) => itinerary.user, { nullable: true })
+    itineraries: Itinerary[];
 
     @CreateDateColumn()
     joinDate: Date;
