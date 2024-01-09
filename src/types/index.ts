@@ -49,3 +49,19 @@ export interface LimitedUserData {
 export interface UpdateUserRequest extends Request {
     body: LimitedUserData;
 }
+
+export interface ItineraryData {
+    tripTitle: string;
+    tripDescription: string;
+    tripDuration: string;
+    startDateTime: string; // Assuming ISO 8601 format (e.g., "2024-01-15T08:00:00Z")
+    endDateTime: string; // Assuming ISO 8601 format (e.g., "2024-01-20T18:00:00Z")
+    startPoint: string;
+    endingPoint: string;
+    destinationImage: string;
+    userId: number;
+}
+
+export interface ItineraryRequestData extends Request {
+    boday: ItineraryData;
+}

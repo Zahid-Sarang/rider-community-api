@@ -34,9 +34,9 @@ describe("POST /auth/register", () => {
                 password: "password",
             };
             // Act
-            const repsonse = await request(app).post("/auth/register").send(userData);
+            const response = await request(app).post("/auth/register").send(userData);
             // Assert
-            expect(repsonse.statusCode).toBe(201);
+            expect(response.statusCode).toBe(201);
         });
 
         it("should return a valid json object", async () => {
@@ -49,10 +49,10 @@ describe("POST /auth/register", () => {
                 password: "password",
             };
             // Act
-            const repsonse = await request(app).post("/auth/register").send(userData);
+            const response = await request(app).post("/auth/register").send(userData);
 
             // Assert
-            expect((repsonse.headers as Record<string, string>)["content-type"]).toEqual(
+            expect((response.headers as Record<string, string>)["content-type"]).toEqual(
                 expect.stringContaining("json"),
             );
         });
