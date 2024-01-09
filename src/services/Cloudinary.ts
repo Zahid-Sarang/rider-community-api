@@ -25,6 +25,7 @@ export class CloudinaryService {
             return response;
         } catch (err) {
             fs.unlinkSync(localFilePath);
+            console.error(err);
             const error = createHttpError(400, "Failed to upload file on server, try Again!");
             throw error;
         }
