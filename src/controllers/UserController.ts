@@ -42,7 +42,6 @@ export class UserController {
         }
     }
     async updateUser(req: UpdateUserRequest, res: Response, next: NextFunction) {
-
         const validationError = validationResult(req);
         if (!validationError.isEmpty()) {
             return res.status(400).json({ error: validationError.array() });
@@ -56,9 +55,9 @@ export class UserController {
             next(createHttpError(400, "Invalid url param!"));
             return;
         }
-        
+
         this.logger.debug("Request for updating a user", req.body);
-        
+
         const files = req.files as { [fieldname: string]: Express.Multer.File[] };
         const profileLocalPath = files?.profilePhoto?.[0]?.path;
         const coverLocalPath = files?.coverPhoto?.[0]?.path;
@@ -74,6 +73,22 @@ export class UserController {
             : null;
 
         try {
+            // delete previous image
+            const userInfo = await this.userService.findById(Number(userId));
+            if (profileLocalPath) {
+                const userProfileImage = userInfo?.profilePhoto;
+                if (userProfileImage) {
+                    await this.cloudinaryService.destroyFile(userProfileImage);
+                }
+            }
+
+            if (coverLocalPath) {
+                const coverImage = userInfo?.coverPhoto;
+                if (coverImage) {
+                    await this.cloudinaryService.destroyFile(coverImage);
+                }
+            }
+
             await this.userService.update(Number(userId), {
                 firstName,
                 lastName,

@@ -2,9 +2,13 @@ import createHttpError from "http-errors";
 import { Repository } from "typeorm";
 import { Itinerary } from "../entity/Itinerary";
 import { ItineraryData } from "../types";
+import { CloudinaryService } from "./Cloudinary";
 
 export class ItineraryService {
-    constructor(private itineraryRepository: Repository<Itinerary>) {}
+    constructor(
+        private itineraryRepository: Repository<Itinerary>,
+        private cloudinaryService: CloudinaryService,
+    ) {}
 
     async createItinerary({
         tripTitle,
@@ -41,5 +45,24 @@ export class ItineraryService {
                 user: true,
             },
         });
+    }
+
+    async deleteById(itineraryId: number) {
+        const itinerary = await this.itineraryRepository.findOne({
+            where: {
+                id: itineraryId,
+            },
+        });
+        if (!itinerary) {
+            const error = createHttpError(
+                400,
+                "itiItinerary with ID ${itineraryId} not found.nerary!",
+            );
+            throw error;
+        }
+        const imageUrl = itinerary?.destinationImage;
+        console.log("imageUrl", imageUrl);
+        await this.cloudinaryService.destroyFile(imageUrl);
+        return await this.itineraryRepository.delete(itineraryId);
     }
 }

@@ -12,7 +12,7 @@ import itineraryValidators from "../validators/itinerary-validators";
 const itineraryRouter = express.Router();
 const cloudinaryService = new CloudinaryService();
 const itineraryRepository = AppDataSource.getRepository(Itinerary);
-const itineraryService = new ItineraryService(itineraryRepository);
+const itineraryService = new ItineraryService(itineraryRepository, cloudinaryService);
 const itineraryController = new ItineraryController(cloudinaryService, logger, itineraryService);
 
 itineraryRouter.post(
@@ -29,6 +29,13 @@ itineraryRouter.get(
     authMiddleware as RequestHandler,
     (req: Request, res: Response, next: NextFunction) =>
         itineraryController.getAllItinerary(req, res, next),
+);
+
+itineraryRouter.delete(
+    "/:id",
+    authMiddleware as RequestHandler,
+    (req: Request, res: Response, next: NextFunction) =>
+        itineraryController.deleteItinerary(req, res, next),
 );
 
 export default itineraryRouter;

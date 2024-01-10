@@ -30,4 +30,22 @@ export class CloudinaryService {
             throw error;
         }
     }
+
+    async destroyFile(imageUrl: string) {
+        const cloudinaryUrlParts = imageUrl.split("/");
+        const filenameWithExtension = cloudinaryUrlParts[cloudinaryUrlParts.length - 1];
+        console.log(filenameWithExtension);
+
+        // If you specifically want the filename without the extension, you can further split by '.'
+        const publicId = filenameWithExtension.split(".")[0];
+        console.log(publicId);
+
+        await cloudinary.uploader.destroy(publicId, (error, result) => {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(result);
+            }
+        });
+    }
 }
