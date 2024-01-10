@@ -5,6 +5,7 @@ import { Logger } from "winston";
 import { CloudinaryService } from "../services/Cloudinary";
 import { UserService } from "../services/UserService";
 import { UpdateUserRequest } from "../types";
+import fs from "fs";
 
 export class UserController {
     constructor(
@@ -62,6 +63,19 @@ export class UserController {
         const profileLocalPath = files?.profilePhoto?.[0]?.path;
         const coverLocalPath = files?.coverPhoto?.[0]?.path;
 
+        const userNameExist = await this.userService.findByUserName(userName);
+
+        if (userNameExist) {
+            if (profileLocalPath) {
+                fs.unlinkSync(profileLocalPath);
+            }
+            if (coverLocalPath) {
+                fs.unlinkSync(coverLocalPath);
+            }
+            next(createHttpError(400, "UserName Already Taken!"));
+            return;
+        }
+
         // upload profile photo on cloudinary
         const profilePhoto = profileLocalPath
             ? await this.cloudinaryService.uploadFile(profileLocalPath)
@@ -75,18 +89,11 @@ export class UserController {
         try {
             // delete previous image
             const userInfo = await this.userService.findById(Number(userId));
-            if (profileLocalPath) {
-                const userProfileImage = userInfo?.profilePhoto;
-                if (userProfileImage) {
-                    await this.cloudinaryService.destroyFile(userProfileImage);
-                }
+            if (profileLocalPath && userInfo?.profilePhoto) {
+                await this.cloudinaryService.destroyFile(userInfo.profilePhoto);
             }
-
-            if (coverLocalPath) {
-                const coverImage = userInfo?.coverPhoto;
-                if (coverImage) {
-                    await this.cloudinaryService.destroyFile(coverImage);
-                }
+            if (coverLocalPath && userInfo?.coverPhoto) {
+                await this.cloudinaryService.destroyFile(userInfo.coverPhoto);
             }
 
             await this.userService.update(Number(userId), {
@@ -113,6 +120,20 @@ export class UserController {
         }
         try {
             // Delet the user
+
+            // delete cloudinary image
+            const userInfo = await this.userService.findById(Number(userId));
+
+            const userProfileImage = userInfo?.profilePhoto;
+            if (userProfileImage) {
+                await this.cloudinaryService.destroyFile(userProfileImage);
+            }
+
+            const coverImage = userInfo?.coverPhoto;
+            if (coverImage) {
+                await this.cloudinaryService.destroyFile(coverImage);
+            }
+
             await this.userService.deleteById(Number(userId));
             this.logger.info("User has been deleted!", {
                 id: Number(userId),

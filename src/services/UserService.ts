@@ -3,6 +3,7 @@ import { User } from "../entity/User";
 import { LimitedUserData, UserData } from "../types";
 import bcrypt from "bcryptjs";
 import createHttpError from "http-errors";
+import { CloudinaryService } from "./Cloudinary";
 
 export class UserService {
     constructor(private userRepository: Repository<User>) {}
@@ -60,6 +61,14 @@ export class UserService {
     async getAll() {
         return await this.userRepository.find({
             relations: ["itineraries"],
+        });
+    }
+
+    async findByUserName(userName: string) {
+        return await this.userRepository.findOne({
+            where: {
+                userName,
+            },
         });
     }
 

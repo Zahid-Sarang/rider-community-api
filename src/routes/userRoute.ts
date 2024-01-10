@@ -14,8 +14,8 @@ import updateUserValidators from "../validators/update-user-validators";
 
 const userRouter = express.Router();
 const userRepository = AppDataSource.getRepository(User);
-const userService = new UserService(userRepository);
 const cloudinaryService = new CloudinaryService();
+const userService = new UserService(userRepository);
 const userContoller = new UserController(userService, logger, cloudinaryService);
 
 userRouter.get(

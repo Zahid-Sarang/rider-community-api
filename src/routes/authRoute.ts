@@ -13,9 +13,11 @@ import authMiddleware from "../middlewares/authMiddleware";
 import { AuthRequest } from "../types";
 import validateRefreshTokenMiddleware from "../middlewares/validateRefreshTokenMiddleware";
 import parseRefreshToken from "../middlewares/parseRefreshToken";
+import { CloudinaryService } from "../services/Cloudinary";
 
 const authRouter = express.Router();
 const userRepository = AppDataSource.getRepository(User);
+const cloudinarySerivce = new CloudinaryService();
 const userService = new UserService(userRepository);
 const refreshToken = AppDataSource.getRepository(RefreshToken);
 const tokenService = new TokenService(refreshToken);
@@ -50,7 +52,5 @@ authRouter.post(
     (req: Request, res: Response, next: NextFunction) =>
         authController.logout(req as AuthRequest, res, next),
 );
-
-
 
 export default authRouter;
