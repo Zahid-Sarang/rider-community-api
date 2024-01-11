@@ -1,6 +1,7 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from "typeorm"
 
-export class AddRefreshtTokenCascade1704002294750 implements MigrationInterface {
+export class RefreshTokens_cascade1704981257091 implements MigrationInterface {
+
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
             `ALTER TABLE "refreshTokens" DROP CONSTRAINT "FK_265bec4e500714d5269580a0219"`,
@@ -20,4 +21,5 @@ export class AddRefreshtTokenCascade1704002294750 implements MigrationInterface 
             `ALTER TABLE "refreshTokens" ADD CONSTRAINT "FK_265bec4e500714d5269580a0219" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
         );
     }
+
 }

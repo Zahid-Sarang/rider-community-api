@@ -6,7 +6,10 @@ import {
     UpdateDateColumn,
     OneToMany,
 } from "typeorm";
+import { Comment } from "./Comment";
 import { Itinerary } from "./Itinerary";
+import { Like } from "./Like";
+import { Memories } from "./Memory";
 
 @Entity({ name: "users" })
 export class User {
@@ -45,6 +48,15 @@ export class User {
 
     @OneToMany(() => Itinerary, (itinerary) => itinerary.user, { nullable: true })
     itineraries: Itinerary[];
+
+    @OneToMany(() => Memories, (memory) => memory.user, { nullable: true })
+    memories: Memories[];
+
+    @OneToMany(() => Like, (like) => like.user, { nullable: true })
+    likes: Like[];
+
+    @OneToMany(() => Comment, (comment) => comment.user, { nullable: true })
+    comments: Comment[];
 
     @CreateDateColumn()
     joinDate: Date;
