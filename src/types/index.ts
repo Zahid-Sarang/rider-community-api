@@ -65,3 +65,16 @@ export interface ItineraryData {
 export interface ItineraryRequestData extends Request {
     body: ItineraryData;
 }
+
+export interface MemoryData {
+    title: string;
+    description: string;
+    image: string;
+    userId: number;
+    likes?: [];
+    comments?: [];
+}
+
+export interface MemoryRequestData extends Request {
+    body: MemoryData;
+}

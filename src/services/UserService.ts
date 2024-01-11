@@ -54,13 +54,13 @@ export class UserService {
     async findById(id: number) {
         return await this.userRepository.findOne({
             where: { id },
-            relations: ["itineraries"],
+            relations: ["itineraries", "memories", "likes", "comments"],
         });
     }
 
     async getAll() {
         return await this.userRepository.find({
-            relations: ["itineraries"],
+            relations: ["itineraries", "memories", "likes", "comments"],
         });
     }
 

@@ -7,6 +7,7 @@ import authRouter from "./routes/authRoute";
 import cookieParser from "cookie-parser";
 import userRouter from "./routes/userRoute";
 import itineraryRouter from "./routes/itinerary";
+import memoryRouter from "./routes/memoryRoute";
 const app = express();
 app.use(express.static("public"));
 const corsOptions = {
@@ -20,7 +21,8 @@ app.use(express.json());
 
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
-app.use("/itinerary",itineraryRouter)
+app.use("/itinerary", itineraryRouter);
+app.use("/memory", memoryRouter);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
