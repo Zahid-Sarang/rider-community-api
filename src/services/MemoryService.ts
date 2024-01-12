@@ -25,4 +25,13 @@ export class MemoryService {
             relations: ["user", "likes", "comments"],
         });
     }
+
+    async getMemoryById(id: number) {
+        return this.memoryRepository.findOne({
+            where: {
+                id,
+            },
+            relations: ["user", "likes", "comments"],
+        });
+    }
 }

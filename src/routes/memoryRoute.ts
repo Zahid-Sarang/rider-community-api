@@ -28,4 +28,7 @@ memoryRoute.get("/", authMiddleware as RequestHandler, (req, res, next) => {
     memoryController.getMemories(req, res, next);
 });
 
+memoryRoute.get("/:id", authMiddleware as RequestHandler, (req, res, next) => {
+    memoryController.getOneMemory(req, res, next);
+});
 export default memoryRoute;

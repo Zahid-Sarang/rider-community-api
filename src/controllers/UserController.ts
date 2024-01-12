@@ -119,8 +119,6 @@ export class UserController {
             return;
         }
         try {
-            // Delet the user
-
             // delete cloudinary image
             const userInfo = await this.userService.findById(Number(userId));
 

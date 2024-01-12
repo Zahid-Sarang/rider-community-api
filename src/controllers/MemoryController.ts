@@ -49,4 +49,22 @@ export class MemoryController {
             next(error);
         }
     }
+
+    async getOneMemory(req: Request, res: Response, next: NextFunction) {
+        try {
+            const memoryId = req.params.id;
+            if (isNaN(Number(memoryId))) {
+                next(createHttpError(400, "Invalid url param!"));
+                return;
+            }
+            const memory = await this.memoryService.getMemoryById(Number(memoryId));
+            if (!memory) {
+                next(createHttpError(400, "Memory does not exist!"));
+                return;
+            }
+            res.json(memory);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
