@@ -1,4 +1,6 @@
 import { NextFunction, Response } from "express";
+import { validationResult } from "express-validator";
+import createHttpError from "http-errors";
 import { Logger } from "winston";
 import { CloudinaryService } from "../services/Cloudinary";
 import { MemoryService } from "../services/MemoryService";
@@ -12,10 +14,27 @@ export class MemoryController {
     ) {}
 
     async createMemories(req: MemoryRequestData, res: Response, next: NextFunction) {
-        const { title, description, image, userId } = req.body;
-        console.log(title, description, userId);
+        // validation
+        const validationError = validationResult(req);
+        if (!validationError.isEmpty()) {
+            return res.status(400).json({ errors: validationError.array() });
+        }
+        const { title, description, userId } = req.body;
 
-        await this.memoryService.createMemory({ title, description, image, userId });
+        // validate image path
+        const imageLocalPath = req.file?.path;
+        if (!imageLocalPath) {
+            return next(createHttpError(400, "Please Upload Image"));
+        }
+
+        // upload image on cloudinary
+        const memoryImage = await this.cloudinaryService.uploadFile(imageLocalPath);
+        await this.memoryService.createMemory({
+            title,
+            description,
+            image: memoryImage.url,
+            userId,
+        });
         res.json({ message: "Hello from memories" });
     }
 }
