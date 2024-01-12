@@ -12,7 +12,7 @@ import memoryValidator from "../validators/memory-validator";
 const memoryRoute = express.Router();
 const memoryRepositroy = AppDataSource.getRepository(Memories);
 const cloudinaryService = new CloudinaryService();
-const memoryService = new MemoryService(memoryRepositroy);
+const memoryService = new MemoryService(memoryRepositroy, cloudinaryService);
 const memoryController = new MemoryController(memoryService, logger, cloudinaryService);
 
 memoryRoute.post(
@@ -30,5 +30,9 @@ memoryRoute.get("/", authMiddleware as RequestHandler, (req, res, next) => {
 
 memoryRoute.get("/:id", authMiddleware as RequestHandler, (req, res, next) => {
     memoryController.getOneMemory(req, res, next);
+});
+
+memoryRoute.delete("/:id", authMiddleware as RequestHandler, (req, res, next) => {
+    memoryController.deleteMemory(req, res, next);
 });
 export default memoryRoute;

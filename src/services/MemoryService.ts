@@ -2,9 +2,13 @@ import createHttpError from "http-errors";
 import { Repository } from "typeorm";
 import { Memories } from "../entity/Memory";
 import { MemoryData } from "../types";
+import { CloudinaryService } from "./Cloudinary";
 
 export class MemoryService {
-    constructor(private memoryRepository: Repository<Memories>) {}
+    constructor(
+        private memoryRepository: Repository<Memories>,
+        private cloudinaryService: CloudinaryService,
+    ) {}
 
     async createMemory({ title, description, image, userId }: MemoryData) {
         try {
@@ -33,5 +37,28 @@ export class MemoryService {
             },
             relations: ["user", "likes", "comments"],
         });
+    }
+
+    async deleteById(id: number) {
+        try {
+            const memory = await this.memoryRepository.findOne({
+                where: {
+                    id,
+                },
+            });
+            if (!memory) {
+                const error = createHttpError(
+                    400,
+                    "Memory with ID ${itineraryId} not found.nerary!",
+                );
+                throw error;
+            }
+            const imageUrl = memory?.image;
+            await this.cloudinaryService.destroyFile(imageUrl);
+            return await this.memoryRepository.delete(id);
+        } catch (err) {
+            const error = createHttpError(500, "Failed to delete Memory");
+            throw error;
+        }
     }
 }

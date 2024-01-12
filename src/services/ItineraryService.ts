@@ -67,7 +67,7 @@ export class ItineraryService {
         if (!itinerary) {
             const error = createHttpError(
                 400,
-                "itiItinerary with ID ${itineraryId} not found.nerary!",
+                "Itinerary with ID ${itineraryId} not found.nerary!",
             );
             throw error;
         }

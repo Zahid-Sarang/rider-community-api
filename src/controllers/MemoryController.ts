@@ -67,4 +67,18 @@ export class MemoryController {
             next(error);
         }
     }
+
+    async deleteMemory(req: Request, res: Response, next: NextFunction) {
+        try {
+            const memoryId = req.params.id;
+            if (isNaN(Number(memoryId))) {
+                next(createHttpError(400, "Invalid url param!"));
+                return;
+            }
+            await this.memoryService.deleteById(Number(memoryId));
+            res.json({ message: "Memory Deleted!" });
+        } catch (error) {
+            next(error);
+        }
+    }
 }
