@@ -47,6 +47,17 @@ export class ItineraryService {
         });
     }
 
+    async getitineraryById(id: number) {
+        return this.itineraryRepository.findOne({
+            where: {
+                id,
+            },
+            relations: {
+                user: true,
+            },
+        });
+    }
+
     async deleteById(itineraryId: number) {
         const itinerary = await this.itineraryRepository.findOne({
             where: {

@@ -31,6 +31,13 @@ itineraryRouter.get(
         itineraryController.getAllItinerary(req, res, next),
 );
 
+itineraryRouter.get(
+    "/:id",
+    authMiddleware as RequestHandler,
+    (req: Request, res: Response, next: NextFunction) =>
+        itineraryController.getOneItineray(req, res, next),
+);
+
 itineraryRouter.delete(
     "/:id",
     authMiddleware as RequestHandler,

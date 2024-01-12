@@ -70,6 +70,24 @@ export class ItineraryController {
         }
     }
 
+    async getOneItineray(req: Request, res: Response, next: NextFunction) {
+        try {
+            const itineraryId = req.params.id;
+            if (isNaN(Number(itineraryId))) {
+                next(createHttpError(400, "Invalid url param!"));
+                return;
+            }
+            const itinerary = await this.itineraryService.getitineraryById(Number(itineraryId));
+            if (!itinerary) {
+                next(createHttpError(400, "Itinerary does not exist!"));
+                return;
+            }
+            res.json(itinerary);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async deleteItinerary(req: Request, res: Response, next: NextFunction) {
         const itineraryId = req.params.id;
 
