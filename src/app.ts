@@ -6,7 +6,7 @@ import logger from "./config/logger";
 import authRouter from "./routes/authRoute";
 import cookieParser from "cookie-parser";
 import userRouter from "./routes/userRoute";
-import itineraryRouter from "./routes/itinerary";
+import itineraryRouter from "./routes/itineraryRoute";
 import memoryRouter from "./routes/memoryRoute";
 const app = express();
 app.use(express.static("public"));

@@ -24,4 +24,8 @@ memoryRoute.post(
         memoryController.createMemories(req, res, next),
 );
 
+memoryRoute.get("/", authMiddleware as RequestHandler, (req, res, next) => {
+    memoryController.getMemories(req, res, next);
+});
+
 export default memoryRoute;

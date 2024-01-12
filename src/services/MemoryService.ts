@@ -16,6 +16,13 @@ export class MemoryService {
             });
         } catch (err) {
             const error = createHttpError(500, "Failed to create Memory");
+            throw error;
         }
+    }
+
+    async getAllMemories() {
+        return this.memoryRepository.find({
+            relations: ["user", "likes", "comments"],
+        });
     }
 }
