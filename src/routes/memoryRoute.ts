@@ -8,6 +8,7 @@ import { upload } from "../middlewares/multerMiddleware";
 import { CloudinaryService } from "../services/Cloudinary";
 import { MemoryService } from "../services/MemoryService";
 import memoryValidator from "../validators/memory-validator";
+import updateMemoryValidators from "../validators/update-memory-validators";
 
 const memoryRoute = express.Router();
 const memoryRepositroy = AppDataSource.getRepository(Memories);
@@ -31,6 +32,15 @@ memoryRoute.get("/", authMiddleware as RequestHandler, (req, res, next) => {
 memoryRoute.get("/:id", authMiddleware as RequestHandler, (req, res, next) => {
     memoryController.getOneMemory(req, res, next);
 });
+memoryRoute.patch(
+    "/:id",
+    updateMemoryValidators,
+    upload.single("image"),
+    authMiddleware as RequestHandler,
+    (req: Request, res: Response, next: NextFunction) => {
+        memoryController.updateMemory(req, res, next);
+    },
+);
 
 memoryRoute.delete("/:id", authMiddleware as RequestHandler, (req, res, next) => {
     memoryController.deleteMemory(req, res, next);

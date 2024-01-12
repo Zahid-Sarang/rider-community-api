@@ -1,7 +1,7 @@
 import createHttpError from "http-errors";
 import { Repository } from "typeorm";
 import { Memories } from "../entity/Memory";
-import { MemoryData } from "../types";
+import { MemoryData, UpdateMemoriesData } from "../types";
 import { CloudinaryService } from "./Cloudinary";
 
 export class MemoryService {
@@ -58,6 +58,19 @@ export class MemoryService {
             return await this.memoryRepository.delete(id);
         } catch (err) {
             const error = createHttpError(500, "Failed to delete Memory");
+            throw error;
+        }
+    }
+
+    async updatememories(memoryId: number, { title, description, image }: UpdateMemoriesData) {
+        try {
+            return await this.memoryRepository.update(memoryId, {
+                title,
+                description,
+                image,
+            });
+        } catch (err) {
+            const error = createHttpError(500, "Failed to update Memory!");
             throw error;
         }
     }

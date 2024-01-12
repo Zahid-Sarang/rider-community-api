@@ -78,3 +78,13 @@ export interface MemoryData {
 export interface MemoryRequestData extends Request {
     body: MemoryData;
 }
+
+export interface UpdateMemoriesData {
+    title?: string;
+    description?: string;
+    image?: string;
+}
+
+export interface UpdateMemoriesRequestData extends Request {
+    body: UpdateMemoriesData;
+}
