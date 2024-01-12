@@ -69,7 +69,7 @@ export interface ItineraryRequestData extends Request {
 export interface MemoryData {
     title: string;
     description: string;
-    image: string;
+    image?: string;
     userId: number;
     likes?: [];
     comments?: [];

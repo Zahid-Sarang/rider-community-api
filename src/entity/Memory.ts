@@ -23,7 +23,7 @@ export class Memories {
     @Column()
     description: string;
 
-    @Column()
+    @Column({ nullable: true })
     image: string;
 
     @ManyToOne(() => User, (user) => user.memories)

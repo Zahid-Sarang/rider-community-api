@@ -23,16 +23,16 @@ export class MemoryController {
         try {
             // validate image path
             const imageLocalPath = req.file?.path;
-            if (!imageLocalPath) {
-                return next(createHttpError(400, "Please Upload Image"));
-            }
+            const memoryImage = imageLocalPath
+                ? await this.cloudinaryService.uploadFile(imageLocalPath)
+                : null;
 
             // upload image on cloudinary
-            const memoryImage = await this.cloudinaryService.uploadFile(imageLocalPath);
+
             await this.memoryService.createMemory({
                 title,
                 description,
-                image: memoryImage.url,
+                image: memoryImage ? memoryImage.url : undefined,
                 userId,
             });
             res.json({ message: "memory created!" });
