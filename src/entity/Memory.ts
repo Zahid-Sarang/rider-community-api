@@ -23,8 +23,8 @@ export class Memories {
     @Column()
     description: string;
 
-    @Column({ nullable: true })
-    image: string;
+    @Column({ nullable: true, type: "varchar" })
+    image: string | null;
 
     @ManyToOne(() => User, (user) => user.memories)
     @JoinColumn({ name: "userId" })

@@ -102,7 +102,7 @@ export class MemoryController {
             await this.memoryService.updatememories(Number(memoryId), {
                 title,
                 description,
-                image: memoryImage ? memoryImage.url : undefined,
+                image: memoryImage ? memoryImage.url : null,
             });
             res.json({ message: "Memory Updated!" });
         } catch (error) {

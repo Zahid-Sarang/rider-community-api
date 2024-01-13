@@ -82,7 +82,7 @@ export interface MemoryRequestData extends Request {
 export interface UpdateMemoriesData {
     title?: string;
     description?: string;
-    image?: string;
+    image?: string | null;
 }
 
 export interface UpdateMemoriesRequestData extends Request {

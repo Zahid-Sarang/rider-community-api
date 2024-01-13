@@ -54,7 +54,9 @@ export class MemoryService {
                 throw error;
             }
             const imageUrl = memory?.image;
-            await this.cloudinaryService.destroyFile(imageUrl);
+            if (imageUrl) {
+                await this.cloudinaryService.destroyFile(imageUrl);
+            }
             return await this.memoryRepository.delete(id);
         } catch (err) {
             const error = createHttpError(500, "Failed to delete Memory");
