@@ -4,7 +4,7 @@ import createHttpError from "http-errors";
 import { Logger } from "winston";
 import { CloudinaryService } from "../services/Cloudinary";
 import { ItineraryService } from "../services/ItineraryService";
-import { ItineraryRequestData } from "../types";
+import { ItineraryRequestData, UpdateItineriesRequestData } from "../types";
 
 export class ItineraryController {
     constructor(
@@ -56,6 +56,64 @@ export class ItineraryController {
             });
 
             res.status(201).json({ message: "Itinerary Created SuccessFully!" });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async updateItinerary(req: UpdateItineriesRequestData, res: Response, next: NextFunction) {
+        // validate itinerary Id
+        const itineraryId = req.params.id;
+        if (isNaN(Number(itineraryId))) {
+            next(createHttpError(400, "Invalid url param!"));
+            return;
+        }
+
+        // validate request fields
+        const validationError = validationResult(req);
+        if (!validationError.isEmpty()) {
+            return res.status(400).json({ error: validationError.array() });
+        }
+
+        const {
+            tripTitle,
+            tripDescription,
+            tripDuration,
+            startDateTime,
+            endDateTime,
+            startPoint,
+            endingPoint,
+        } = req.body;
+
+        // validate ImagePath
+        const destinationImagelocalPath = req.file?.path;
+        if (!destinationImagelocalPath) {
+            return next(createHttpError(400, "Please Upload Image"));
+        }
+
+        try {
+            // upload image to cloudinary
+            const destinationImage =
+                await this.cloudinaryService.uploadFile(destinationImagelocalPath);
+
+            // destory previos image
+            const itineraryInfo = await this.itineraryService.getitineraryById(Number(itineraryId));
+            if (itineraryInfo?.destinationImage) {
+                await this.cloudinaryService.destroyFile(itineraryInfo.destinationImage);
+            }
+
+            // update Itinerary
+            await this.itineraryService.updateItineries(Number(itineraryId), {
+                tripTitle,
+                tripDescription,
+                tripDuration,
+                startDateTime,
+                endDateTime,
+                startPoint,
+                endingPoint,
+                destinationImage: destinationImage.url,
+            });
+            res.json({ message: "Itinerary updated!" });
         } catch (error) {
             next(error);
         }

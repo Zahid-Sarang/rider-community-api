@@ -88,3 +88,18 @@ export interface UpdateMemoriesData {
 export interface UpdateMemoriesRequestData extends Request {
     body: UpdateMemoriesData;
 }
+
+export interface UpdateItineraryData {
+    tripTitle?: string;
+    tripDescription?: string;
+    tripDuration?: string;
+    startDateTime?: string;
+    endDateTime?: string;
+    startPoint?: string;
+    endingPoint?: string;
+    destinationImage?: string;
+}
+
+export interface UpdateItineriesRequestData extends Request {
+    body: UpdateItineraryData;
+}

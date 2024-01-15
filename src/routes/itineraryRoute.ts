@@ -8,6 +8,7 @@ import { upload } from "../middlewares/multerMiddleware";
 import { CloudinaryService } from "../services/Cloudinary";
 import { ItineraryService } from "../services/ItineraryService";
 import itineraryValidators from "../validators/itinerary-validators";
+import updateItineriesValidators from "../validators/update-itineries-validators";
 
 const itineraryRouter = express.Router();
 const cloudinaryService = new CloudinaryService();
@@ -36,6 +37,15 @@ itineraryRouter.get(
     authMiddleware as RequestHandler,
     (req: Request, res: Response, next: NextFunction) =>
         itineraryController.getOneItineray(req, res, next),
+);
+
+itineraryRouter.patch(
+    "/:id",
+    upload.single("destinationImage"),
+    updateItineriesValidators,
+    authMiddleware as RequestHandler,
+    (req: Request, res: Response, next: NextFunction) =>
+        itineraryController.updateItinerary(req, res, next),
 );
 
 itineraryRouter.delete(

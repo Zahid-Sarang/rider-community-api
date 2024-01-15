@@ -1,7 +1,7 @@
 import createHttpError from "http-errors";
 import { Repository } from "typeorm";
 import { Itinerary } from "../entity/Itinerary";
-import { ItineraryData } from "../types";
+import { ItineraryData, UpdateItineraryData } from "../types";
 import { CloudinaryService } from "./Cloudinary";
 
 export class ItineraryService {
@@ -35,6 +35,36 @@ export class ItineraryService {
             });
         } catch (err) {
             const error = createHttpError(500, "Failed to create itinerary!");
+            throw error;
+        }
+    }
+
+    async updateItineries(
+        itineraryId: number,
+        {
+            tripTitle,
+            tripDescription,
+            tripDuration,
+            startDateTime,
+            endDateTime,
+            startPoint,
+            endingPoint,
+            destinationImage,
+        }: UpdateItineraryData,
+    ) {
+        try {
+            return await this.itineraryRepository.update(itineraryId, {
+                tripTitle,
+                tripDescription,
+                tripDuration,
+                startDateTime,
+                endDateTime,
+                startPoint,
+                endingPoint,
+                destinationImage,
+            });
+        } catch (err) {
+            const error = createHttpError(500, "Failed to update Itinerary!");
             throw error;
         }
     }
