@@ -3,7 +3,7 @@ import { User } from "../entity/User";
 import { LimitedUserData, UserData } from "../types";
 import bcrypt from "bcryptjs";
 import createHttpError from "http-errors";
-import { CloudinaryService } from "./Cloudinary";
+
 
 export class UserService {
     constructor(private userRepository: Repository<User>) {}
