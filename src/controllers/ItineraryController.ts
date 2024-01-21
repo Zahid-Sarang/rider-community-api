@@ -178,18 +178,7 @@ export class ItineraryController {
                 next(createHttpError(400, "Please give user info!"));
                 return;
             }
-            // fetch user and itinerary
-            const userInfo = await this.userSerivce.findById(Number(userId));
-            if (!userInfo) {
-                next(createHttpError(400, "User not found!"));
-                return;
-            }
-
-            const itineraryInfo = await this.itineraryService.getitineraryById(Number(itineraryId));
-            if (!itineraryInfo) {
-                next(createHttpError(400, "User not found!"));
-                return;
-            }
+            await this.itineraryService.joinItineraries(Number(userId), Number(itineraryId));
             res.json({ message: "Itinerary Joined" });
         } catch (error) {
             next(error);

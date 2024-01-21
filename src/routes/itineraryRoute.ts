@@ -15,8 +15,9 @@ import updateItineriesValidators from "../validators/update-itineries-validators
 const itineraryRouter = express.Router();
 const cloudinaryService = new CloudinaryService();
 const itineraryRepository = AppDataSource.getRepository(Itinerary);
-const itineraryService = new ItineraryService(itineraryRepository, cloudinaryService);
+
 const userRepository = AppDataSource.getRepository(User);
+const itineraryService = new ItineraryService(itineraryRepository, cloudinaryService,userRepository);
 const userService = new UserService(userRepository);
 const itineraryController = new ItineraryController(
     cloudinaryService,

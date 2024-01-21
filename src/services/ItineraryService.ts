@@ -1,6 +1,7 @@
 import createHttpError from "http-errors";
 import { Repository } from "typeorm";
 import { Itinerary } from "../entity/Itinerary";
+import { User } from "../entity/User";
 import { ItineraryData, UpdateItineraryData } from "../types";
 import { CloudinaryService } from "./Cloudinary";
 
@@ -8,6 +9,7 @@ export class ItineraryService {
     constructor(
         private itineraryRepository: Repository<Itinerary>,
         private cloudinaryService: CloudinaryService,
+        private userRepository: Repository<User>,
     ) {}
 
     async createItinerary({
@@ -71,9 +73,7 @@ export class ItineraryService {
 
     async getItinerary() {
         return this.itineraryRepository.find({
-            relations: {
-                user: true,
-            },
+            relations: ["participants", "user"],
         });
     }
 
@@ -82,9 +82,7 @@ export class ItineraryService {
             where: {
                 id,
             },
-            relations: {
-                user: true,
-            },
+            relations: ["participants", "user"],
         });
     }
 
@@ -105,5 +103,47 @@ export class ItineraryService {
         console.log("imageUrl", imageUrl);
         await this.cloudinaryService.destroyFile(imageUrl);
         return await this.itineraryRepository.delete(itineraryId);
+    }
+
+    async joinItineraries(userId: number, itineraryId: number) {
+        try {
+            // fetch user and itinerary
+            const userInfo = await this.userRepository.findOne({
+                where: {
+                    id: userId,
+                },
+            });
+            if (!userInfo) {
+                const error = createHttpError(400, "User not found!");
+                throw error;
+            }
+            const itineraryInfo = await this.itineraryRepository.findOne({
+                where: {
+                    id: itineraryId,
+                },
+                relations: ["participants"],
+            });
+            if (!itineraryInfo) {
+                const error = createHttpError(400, "Itinerary not found!");
+                throw error;
+            }
+
+            // Check if the user already a participant
+            const isParticipant = itineraryInfo.participants.some(
+                (participant) => participant.id === userId,
+            );
+            if (isParticipant) {
+                const error = createHttpError(400, "You already Joined!");
+                throw error;
+            }
+
+            // add the user to the participants
+            itineraryInfo.participants.push(userInfo);
+            await this.itineraryRepository.save(itineraryInfo);
+        } catch (err) {
+            console.log(err);
+            const error = createHttpError(500, "Failed to update Itinerary!");
+            throw error;
+        }
     }
 }
