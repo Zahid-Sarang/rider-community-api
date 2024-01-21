@@ -1,5 +1,13 @@
 // Itinerary.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    ManyToOne,
+    JoinColumn,
+    ManyToMany,
+    JoinTable,
+} from "typeorm";
 import { User } from "./User";
 
 @Entity()
@@ -34,4 +42,8 @@ export class Itinerary {
     @ManyToOne(() => User, (user) => user.itineraries)
     @JoinColumn({ name: "userId" })
     user: User;
+    
+    @ManyToMany(() => User, (user) => user.joinedItineraries)
+    @JoinTable()
+    participants: User[];
 }

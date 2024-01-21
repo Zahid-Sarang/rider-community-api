@@ -5,6 +5,8 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     OneToMany,
+    ManyToMany,
+    JoinTable,
 } from "typeorm";
 import { Comment } from "./Comment";
 import { Itinerary } from "./Itinerary";
@@ -35,7 +37,7 @@ export class User {
     profilePhoto: string;
 
     @Column({ nullable: true, type: "varchar" })
-    coverPhoto: string | null;
+    coverPhoto: string[] | null;
 
     @Column({ nullable: true })
     bio: string;
@@ -48,6 +50,10 @@ export class User {
 
     @OneToMany(() => Itinerary, (itinerary) => itinerary.user, { nullable: true })
     itineraries: Itinerary[];
+
+    @ManyToMany(() => Itinerary, (itinerary) => itinerary.participants, { nullable: true })
+    @JoinTable()
+    joinedItineraries: Itinerary[];
 
     @OneToMany(() => Memories, (memory) => memory.user, { nullable: true })
     memories: Memories[];

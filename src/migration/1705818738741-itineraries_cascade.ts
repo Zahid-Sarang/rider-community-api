@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Itineraries_cascade1705079027200 implements MigrationInterface {
+export class ItinerariesCascade1705818738741 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
             `ALTER TABLE "itinerary" DROP CONSTRAINT "FK_fe8aa2e64e4676c7dd623eb6349"`,
