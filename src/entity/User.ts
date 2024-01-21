@@ -37,7 +37,7 @@ export class User {
     profilePhoto: string;
 
     @Column({ nullable: true, type: "varchar" })
-    coverPhoto: string[] | null;
+    coverPhoto: string | null;
 
     @Column({ nullable: true })
     bio: string;

@@ -3,10 +3,12 @@ import { AppDataSource } from "../config/data-source";
 import logger from "../config/logger";
 import { ItineraryController } from "../controllers/ItineraryController";
 import { Itinerary } from "../entity/Itinerary";
+import { User } from "../entity/User";
 import authMiddleware from "../middlewares/authMiddleware";
 import { upload } from "../middlewares/multerMiddleware";
 import { CloudinaryService } from "../services/Cloudinary";
 import { ItineraryService } from "../services/ItineraryService";
+import { UserService } from "../services/UserService";
 import itineraryValidators from "../validators/itinerary-validators";
 import updateItineriesValidators from "../validators/update-itineries-validators";
 
@@ -14,7 +16,14 @@ const itineraryRouter = express.Router();
 const cloudinaryService = new CloudinaryService();
 const itineraryRepository = AppDataSource.getRepository(Itinerary);
 const itineraryService = new ItineraryService(itineraryRepository, cloudinaryService);
-const itineraryController = new ItineraryController(cloudinaryService, logger, itineraryService);
+const userRepository = AppDataSource.getRepository(User);
+const userService = new UserService(userRepository);
+const itineraryController = new ItineraryController(
+    cloudinaryService,
+    logger,
+    itineraryService,
+    userService,
+);
 
 itineraryRouter.post(
     "/",
@@ -23,6 +32,10 @@ itineraryRouter.post(
     itineraryValidators,
     (req: Request, res: Response, next: NextFunction) =>
         itineraryController.createItinerary(req, res, next),
+);
+
+itineraryRouter.post("/:id/join", authMiddleware as RequestHandler, (req, res, next) =>
+    itineraryController.joinItineraries(req, res, next),
 );
 
 itineraryRouter.get(

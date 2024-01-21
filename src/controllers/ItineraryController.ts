@@ -4,6 +4,7 @@ import createHttpError from "http-errors";
 import { Logger } from "winston";
 import { CloudinaryService } from "../services/Cloudinary";
 import { ItineraryService } from "../services/ItineraryService";
+import { UserService } from "../services/UserService";
 import { ItineraryRequestData, UpdateItineriesRequestData } from "../types";
 
 export class ItineraryController {
@@ -11,6 +12,7 @@ export class ItineraryController {
         private cloudinaryService: CloudinaryService,
         private logger: Logger,
         private itineraryService: ItineraryService,
+        private userSerivce: UserService,
     ) {}
 
     async createItinerary(req: ItineraryRequestData, res: Response, next: NextFunction) {
@@ -157,6 +159,38 @@ export class ItineraryController {
         try {
             await this.itineraryService.deleteById(Number(itineraryId));
             res.json({ message: "Itinerary Deleted" });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async joinItineraries(req: ItineraryRequestData, res: Response, next: NextFunction) {
+        const itineraryId = req.params.id;
+
+        if (isNaN(Number(itineraryId))) {
+            next(createHttpError(400, "Invalid url param!"));
+            return;
+        }
+
+        try {
+            const { userId } = req.body;
+            if (!userId) {
+                next(createHttpError(400, "Please give user info!"));
+                return;
+            }
+            // fetch user and itinerary
+            const userInfo = await this.userSerivce.findById(Number(userId));
+            if (!userInfo) {
+                next(createHttpError(400, "User not found!"));
+                return;
+            }
+
+            const itineraryInfo = await this.itineraryService.getitineraryById(Number(itineraryId));
+            if (!itineraryInfo) {
+                next(createHttpError(400, "User not found!"));
+                return;
+            }
+            res.json({ message: "Itinerary Joined" });
         } catch (error) {
             next(error);
         }

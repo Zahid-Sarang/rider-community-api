@@ -103,3 +103,11 @@ export interface UpdateItineraryData {
 export interface UpdateItineriesRequestData extends Request {
     body: UpdateItineraryData;
 }
+
+export interface JoinItinerariesData {
+    userId: number;
+}
+
+export interface JoinItinerariesRequestData extends Request {
+    body: JoinItinerariesData;
+}
