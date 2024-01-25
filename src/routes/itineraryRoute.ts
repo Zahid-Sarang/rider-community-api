@@ -17,7 +17,11 @@ const cloudinaryService = new CloudinaryService();
 const itineraryRepository = AppDataSource.getRepository(Itinerary);
 
 const userRepository = AppDataSource.getRepository(User);
-const itineraryService = new ItineraryService(itineraryRepository, cloudinaryService,userRepository);
+const itineraryService = new ItineraryService(
+    itineraryRepository,
+    cloudinaryService,
+    userRepository,
+);
 const userService = new UserService(userRepository);
 const itineraryController = new ItineraryController(
     cloudinaryService,
@@ -33,10 +37,6 @@ itineraryRouter.post(
     itineraryValidators,
     (req: Request, res: Response, next: NextFunction) =>
         itineraryController.createItinerary(req, res, next),
-);
-
-itineraryRouter.post("/:id/join", authMiddleware as RequestHandler, (req, res, next) =>
-    itineraryController.joinItineraries(req, res, next),
 );
 
 itineraryRouter.get(
@@ -69,4 +69,7 @@ itineraryRouter.delete(
         itineraryController.deleteItinerary(req, res, next),
 );
 
+// itineraryRouter.post("/:id/join", authMiddleware as RequestHandler, (req, res, next) =>
+//     itineraryController.joinItineraries(req, res, next),
+// );
 export default itineraryRouter;

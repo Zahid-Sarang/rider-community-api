@@ -42,8 +42,4 @@ export class Itinerary {
     @ManyToOne(() => User, (user) => user.itineraries)
     @JoinColumn({ name: "userId" })
     user: User;
-    
-    @ManyToMany(() => User, (user) => user.joinedItineraries)
-    @JoinTable()
-    participants: User[];
 }

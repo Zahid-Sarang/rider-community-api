@@ -51,10 +51,6 @@ export class User {
     @OneToMany(() => Itinerary, (itinerary) => itinerary.user, { nullable: true })
     itineraries: Itinerary[];
 
-    @ManyToMany(() => Itinerary, (itinerary) => itinerary.participants, { nullable: true })
-    @JoinTable()
-    joinedItineraries: Itinerary[];
-
     @OneToMany(() => Memories, (memory) => memory.user, { nullable: true })
     memories: Memories[];
 
