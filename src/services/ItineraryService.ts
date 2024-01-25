@@ -73,7 +73,7 @@ export class ItineraryService {
 
     async getItinerary() {
         return this.itineraryRepository.find({
-            relations: ["participants", "user"],
+            relations: ["joinedUsers", "user"],
         });
     }
 
@@ -82,7 +82,7 @@ export class ItineraryService {
             where: {
                 id,
             },
-            relations: ["participants", "user"],
+            relations: ["joinedUsers", "user"],
         });
     }
 
@@ -103,5 +103,40 @@ export class ItineraryService {
         console.log("imageUrl", imageUrl);
         await this.cloudinaryService.destroyFile(imageUrl);
         return await this.itineraryRepository.delete(itineraryId);
+    }
+
+    async joinItineraries(userId: number, itineraryId: number) {
+        try {
+            const userInfo = await this.userRepository.findOne({
+                where: {
+                    id: userId,
+                },
+                relations: ["joinedItineraries"],
+            });
+
+            const itineraryInfo = await this.itineraryRepository.findOne({
+                where: {
+                    id: itineraryId,
+                },
+            });
+
+            if (!userInfo || !itineraryInfo) {
+                const error = createHttpError(400, "User or Itinerary not found!");
+                throw error;
+            }
+            // Check if the user is already joined to the itinerary
+            if (!userInfo.joinedItineraries.some((i) => i.id === itineraryInfo.id)) {
+                // If not joined, add the user to the itinerary and save changes
+                userInfo.joinedItineraries.push(itineraryInfo);
+                return await this.userRepository.save(userInfo);
+            } else {
+                const error = createHttpError(400, "User is already joined to the itinerary!");
+                throw error;
+            }
+        } catch (err) {
+            console.log(err);
+            const error = createHttpError(500, "Failed to update Itinerary!");
+            throw error;
+        }
     }
 }

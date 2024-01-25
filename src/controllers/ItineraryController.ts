@@ -164,5 +164,18 @@ export class ItineraryController {
         }
     }
 
-    
+    async joinItineraries(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { userId, itineraryId } = req.body;
+            if (isNaN(Number(itineraryId)) || isNaN(Number(userId))) {
+                next(createHttpError(400, "Invalid url param!"));
+                return;
+            }
+            await this.itineraryService.joinItineraries(Number(userId), Number(itineraryId));
+
+            res.json({ message: "Joined the Itinerary!" });
+        } catch (error) {
+            next(error);
+        }
+    }
 }

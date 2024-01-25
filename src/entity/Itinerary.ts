@@ -39,6 +39,9 @@ export class Itinerary {
     @Column()
     destinationImage: string;
 
+    @ManyToMany(() => User, (user) => user.joinedItineraries)
+    joinedUsers: User[];
+
     @ManyToOne(() => User, (user) => user.itineraries)
     @JoinColumn({ name: "userId" })
     user: User;

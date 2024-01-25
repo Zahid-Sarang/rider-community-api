@@ -60,6 +60,10 @@ export class User {
     @OneToMany(() => Comment, (comment) => comment.user, { nullable: true })
     comments: Comment[];
 
+    @ManyToMany(() => Itinerary, (itinerary) => itinerary.joinedUsers)
+    @JoinTable()
+    joinedItineraries: Itinerary[];
+
     @CreateDateColumn()
     joinDate: Date;
 

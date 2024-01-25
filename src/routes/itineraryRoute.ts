@@ -69,7 +69,7 @@ itineraryRouter.delete(
         itineraryController.deleteItinerary(req, res, next),
 );
 
-// itineraryRouter.post("/:id/join", authMiddleware as RequestHandler, (req, res, next) =>
-//     itineraryController.joinItineraries(req, res, next),
-// );
+itineraryRouter.post("/joinItinerary", authMiddleware as RequestHandler, (req, res, next) =>
+    itineraryController.joinItineraries(req, res, next),
+);
 export default itineraryRouter;
