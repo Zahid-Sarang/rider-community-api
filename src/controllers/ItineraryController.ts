@@ -178,4 +178,19 @@ export class ItineraryController {
             next(error);
         }
     }
+
+    async leaveItineraries(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { userId, itineraryId } = req.body;
+            if (isNaN(Number(itineraryId)) || isNaN(Number(userId))) {
+                next(createHttpError(400, "Invalid url param!"));
+                return;
+            }
+            await this.itineraryService.leaveItineraries(Number(userId), Number(itineraryId));
+
+            res.json({ message: "Leave the Itinerary!" });
+        } catch (error) {
+            next(error);
+        }
+    }
 }

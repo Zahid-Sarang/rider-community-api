@@ -126,17 +126,50 @@ export class ItineraryService {
             }
             // Check if the user is already joined to the itinerary
             if (!userInfo.joinedItineraries.some((i) => i.id === itineraryInfo.id)) {
-                // If not joined, add the user to the itinerary and save changes
-                userInfo.joinedItineraries.push(itineraryInfo);
+                userInfo.joinedItineraries.push(itineraryInfo); // If not joined, add the user to the itinerary and save changes
                 return await this.userRepository.save(userInfo);
             } else {
                 const error = createHttpError(400, "User is already joined to the itinerary!");
                 throw error;
             }
         } catch (err) {
-            console.log(err);
-            const error = createHttpError(500, "Failed to update Itinerary!");
-            throw error;
+            throw err;
+        }
+    }
+
+    async leaveItineraries(userId: number, itineraryId: number) {
+        try {
+            const userInfo = await this.userRepository.findOne({
+                where: {
+                    id: userId,
+                },
+                relations: ["joinedItineraries"],
+            });
+
+            const itineraryInfo = await this.itineraryRepository.findOne({
+                where: {
+                    id: itineraryId,
+                },
+            });
+
+            if (!userInfo || !itineraryInfo) {
+                const error = createHttpError(400, "User or Itinerary not found!");
+                throw error;
+            }
+
+            // Check if the user is joined to the itinerary
+            if (userInfo.joinedItineraries.some((i) => i.id === itineraryInfo.id)) {
+                // If joined, remove the user from the itinerary and save changes
+                userInfo.joinedItineraries = userInfo.joinedItineraries.filter(
+                    (i) => i.id !== itineraryInfo.id,
+                );
+                return await this.userRepository.save(userInfo);
+            } else {
+                const error = createHttpError(400, "User is not joined to the itinerary!");
+                throw error;
+            }
+        } catch (err) {
+            throw err;
         }
     }
 }
