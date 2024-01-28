@@ -4,6 +4,7 @@ import logger from "../config/logger";
 
 import { UserController } from "../controllers/UserController";
 import { User } from "../entity/User";
+import { UserRelationship } from "../entity/UserRelationship";
 import authMiddleware from "../middlewares/authMiddleware";
 import { canAccess } from "../middlewares/checkUserMiddleware";
 import { upload } from "../middlewares/multerMiddleware";
@@ -15,7 +16,8 @@ import updateUserValidators from "../validators/update-user-validators";
 const userRouter = express.Router();
 const userRepository = AppDataSource.getRepository(User);
 const cloudinaryService = new CloudinaryService();
-const userService = new UserService(userRepository);
+const userRelationShipRepository = AppDataSource.getRepository(UserRelationship);
+const userService = new UserService(userRepository, userRelationShipRepository);
 const userContoller = new UserController(userService, logger, cloudinaryService);
 
 userRouter.get(
@@ -57,5 +59,12 @@ userRouter.delete(
     updateUserValidators,
     (req: Request, res: Response, next: NextFunction) =>
         userContoller.deleteUser(req, res, next) as unknown as RequestHandler,
+);
+
+userRouter.post(
+    "/follow",
+    authMiddleware as RequestHandler,
+    (req: Request, res: Response, next: NextFunction) =>
+        userContoller.followUser(req, res, next) as unknown as RequestHandler,
 );
 export default userRouter;

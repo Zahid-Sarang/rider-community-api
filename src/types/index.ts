@@ -111,3 +111,12 @@ export interface JoinItinerariesData {
 export interface JoinItinerariesRequestData extends Request {
     body: JoinItinerariesData;
 }
+
+export interface UserRelationshipData {
+    followerId: number;
+    followedId: number;
+}
+
+export interface UserRelationshipRequestData extends Request {
+    body: UserRelationshipData;
+}

@@ -13,10 +13,12 @@ import authMiddleware from "../middlewares/authMiddleware";
 import { AuthRequest } from "../types";
 import validateRefreshTokenMiddleware from "../middlewares/validateRefreshTokenMiddleware";
 import parseRefreshToken from "../middlewares/parseRefreshToken";
+import { UserRelationship } from "../entity/UserRelationship";
 
 const authRouter = express.Router();
 const userRepository = AppDataSource.getRepository(User);
-const userService = new UserService(userRepository);
+const userRelationShipRepository = AppDataSource.getRepository(UserRelationship);
+const userService = new UserService(userRepository, userRelationShipRepository);
 const refreshToken = AppDataSource.getRepository(RefreshToken);
 const tokenService = new TokenService(refreshToken);
 const credentialsService = new CredentialService();

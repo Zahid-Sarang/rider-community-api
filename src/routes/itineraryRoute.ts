@@ -4,6 +4,7 @@ import logger from "../config/logger";
 import { ItineraryController } from "../controllers/ItineraryController";
 import { Itinerary } from "../entity/Itinerary";
 import { User } from "../entity/User";
+import { UserRelationship } from "../entity/UserRelationship";
 import authMiddleware from "../middlewares/authMiddleware";
 import { upload } from "../middlewares/multerMiddleware";
 import { CloudinaryService } from "../services/Cloudinary";
@@ -22,7 +23,8 @@ const itineraryService = new ItineraryService(
     cloudinaryService,
     userRepository,
 );
-const userService = new UserService(userRepository);
+const userRelationShipRepository = AppDataSource.getRepository(UserRelationship);
+const userService = new UserService(userRepository, userRelationShipRepository);
 const itineraryController = new ItineraryController(
     cloudinaryService,
     logger,

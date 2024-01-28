@@ -12,6 +12,7 @@ import { Comment } from "./Comment";
 import { Itinerary } from "./Itinerary";
 import { Like } from "./Like";
 import { Memories } from "./Memory";
+import { UserRelationship } from "./UserRelationship";
 
 @Entity({ name: "users" })
 export class User {
@@ -63,6 +64,12 @@ export class User {
     @ManyToMany(() => Itinerary, (itinerary) => itinerary.joinedUsers)
     @JoinTable()
     joinedItineraries: Itinerary[];
+
+    @OneToMany(() => UserRelationship, (relationship) => relationship.follower)
+    followers: UserRelationship[];
+
+    @OneToMany(() => UserRelationship, (relationship) => relationship.followed)
+    following: UserRelationship[];
 
     @CreateDateColumn()
     joinDate: Date;

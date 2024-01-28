@@ -4,7 +4,7 @@ import createHttpError from "http-errors";
 import { Logger } from "winston";
 import { CloudinaryService } from "../services/Cloudinary";
 import { UserService } from "../services/UserService";
-import { UpdateUserRequest } from "../types";
+import { UpdateUserRequest, UserRelationshipRequestData } from "../types";
 import fs from "fs";
 
 export class UserController {
@@ -137,6 +137,24 @@ export class UserController {
                 id: Number(userId),
             });
             res.json({ message: "User has been Deleted" });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async followUser(req: UserRelationshipRequestData, res: Response, next: NextFunction) {
+        const validationError = validationResult(req);
+        if (!validationError.isEmpty()) {
+            return res.status(400).json({ error: validationError.array() });
+        }
+        try {
+            const { followerId, followedId } = req.body;
+            if (isNaN(Number(followerId)) || isNaN(Number(followedId))) {
+                next(createHttpError(400, "Invalid url param!"));
+                return;
+            }
+            await this.userService.addFollowers(Number(followerId), Number(followedId));
+            res.status(200).json({ message: "User followed successfully." });
         } catch (error) {
             next(error);
         }
