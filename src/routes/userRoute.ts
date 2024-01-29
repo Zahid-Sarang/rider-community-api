@@ -65,4 +65,11 @@ userRouter.post(
     (req: Request, res: Response, next: NextFunction) =>
         userContoller.followUser(req, res, next) as unknown as RequestHandler,
 );
+
+userRouter.post(
+    "/unfollow",
+    authMiddleware as RequestHandler,
+    (req: Request, res: Response, next: NextFunction) =>
+        userContoller.unFollowUser(req, res, next) as unknown as RequestHandler,
+);
 export default userRouter;

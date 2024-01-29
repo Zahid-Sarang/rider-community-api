@@ -105,12 +105,7 @@ export class UserService {
     }
 
     async addFollowers(userId: number, targetUserId: number) {
-        const user = await this.userRepository.findOne({
-            where: {
-                id: userId,
-            },
-            relations: ["following"],
-        });
+        const user = await this.findById(userId);
 
         const targetUser = await this.userRepository.findOne({
             where: {
@@ -120,6 +115,15 @@ export class UserService {
 
         if (user && targetUser) {
             user.following.push(targetUser);
+            await this.userRepository.save(user);
+        }
+    }
+
+    async removeFollowers(userId: number, targetUserId: number) {
+        const user = await this.findById(userId);
+
+        if (user) {
+            user.following = user.following.filter((u) => u.id !== targetUserId);
             await this.userRepository.save(user);
         }
     }

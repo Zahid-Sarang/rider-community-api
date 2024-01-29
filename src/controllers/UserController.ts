@@ -159,4 +159,22 @@ export class UserController {
             next(error);
         }
     }
+
+    async unFollowUser(req: UserRelationshipRequestData, res: Response, next: NextFunction) {
+        const validationError = validationResult(req);
+        if (!validationError.isEmpty()) {
+            return res.status(400).json({ error: validationError.array() });
+        }
+        try {
+            const { followerId, followedId } = req.body;
+            if (isNaN(Number(followerId)) || isNaN(Number(followedId))) {
+                next(createHttpError(400, "Invalid url param!"));
+                return;
+            }
+            await this.userService.removeFollowers(Number(followerId), Number(followedId));
+            res.status(200).json({ message: "User unFollowed successfully." });
+        } catch (error) {
+            next(error);
+        }
+    }
 }
