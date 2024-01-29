@@ -3,13 +3,9 @@ import { User } from "../entity/User";
 import { LimitedUserData, UserData, UserRelationshipData } from "../types";
 import bcrypt from "bcryptjs";
 import createHttpError from "http-errors";
-import { UserRelationship } from "../entity/UserRelationship";
 
 export class UserService {
-    constructor(
-        private userRepository: Repository<User>,
-        private userRelationShipRepository: Repository<UserRelationship>,
-    ) {}
+    constructor(private userRepository: Repository<User>) {}
     async createUser({ firstName, lastName, email, password, userName }: UserData) {
         // Check if user already exists
         const userEmail = await this.userRepository.findOne({
@@ -63,7 +59,7 @@ export class UserService {
 
     async getAll() {
         return await this.userRepository.find({
-            relations: ["itineraries", "memories", "likes", "comments"],
+            relations: ["itineraries", "memories", "likes", "comments", "followers", "following"],
         });
     }
 
@@ -108,24 +104,23 @@ export class UserService {
         return await this.userRepository.delete(userId);
     }
 
-    async addFollowers(followerId: number, followedId: number) {
-        const follower = await this.findById(followerId);
-        const followed = await this.findById(followedId);
+    async addFollowers(userId: number, targetUserId: number) {
+        const user = await this.userRepository.findOne({
+            where: {
+                id: userId,
+            },
+            relations: ["following"],
+        });
 
-        if (!follower || !followed) {
-            const error = createHttpError(400, "Users Not Found!");
-            throw error;
-        }
+        const targetUser = await this.userRepository.findOne({
+            where: {
+                id: targetUserId,
+            },
+        });
 
-        const userRelationship = new UserRelationship();
-        userRelationship.follower = follower;
-        userRelationship.followed = followed;
-
-        try {
-            await this.userRelationShipRepository.save(userRelationship);
-            return "Successfully followed the user!";
-        } catch (error) {
-            throw error;
+        if (user && targetUser) {
+            user.following.push(targetUser);
+            await this.userRepository.save(user);
         }
     }
 }

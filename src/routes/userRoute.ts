@@ -4,7 +4,6 @@ import logger from "../config/logger";
 
 import { UserController } from "../controllers/UserController";
 import { User } from "../entity/User";
-import { UserRelationship } from "../entity/UserRelationship";
 import authMiddleware from "../middlewares/authMiddleware";
 import { canAccess } from "../middlewares/checkUserMiddleware";
 import { upload } from "../middlewares/multerMiddleware";
@@ -16,8 +15,7 @@ import updateUserValidators from "../validators/update-user-validators";
 const userRouter = express.Router();
 const userRepository = AppDataSource.getRepository(User);
 const cloudinaryService = new CloudinaryService();
-const userRelationShipRepository = AppDataSource.getRepository(UserRelationship);
-const userService = new UserService(userRepository, userRelationShipRepository);
+const userService = new UserService(userRepository);
 const userContoller = new UserController(userService, logger, cloudinaryService);
 
 userRouter.get(
