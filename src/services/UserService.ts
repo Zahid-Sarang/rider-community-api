@@ -145,18 +145,6 @@ export class UserService {
             where: {
                 id: Not(In([...followedUserIds, userId])),
             },
-            relations: [
-                "itineraries",
-                "memories",
-                "likes",
-                "comments",
-                "followers",
-                "following",
-                "following.itineraries",
-                "following.memories",
-                "followers.itineraries",
-                "followers.memories",
-            ],
         });
     }
     private async getFollowedUserIds(userId: number): Promise<number[]> {
