@@ -72,4 +72,11 @@ userRouter.post(
     (req: Request, res: Response, next: NextFunction) =>
         userContoller.unFollowUser(req, res, next) as unknown as RequestHandler,
 );
+
+userRouter.get(
+    "/:id/unfollowedUsers",
+    authMiddleware,
+    (req: Request, res: Response, next: NextFunction) =>
+        userContoller.getUnfollowedUsers(req, res, next),
+);
 export default userRouter;

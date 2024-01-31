@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { In, Not, Repository } from "typeorm";
 import { User } from "../entity/User";
 import { LimitedUserData, UserData, UserRelationshipData } from "../types";
 import bcrypt from "bcryptjs";
@@ -137,5 +137,22 @@ export class UserService {
             user.following = user.following.filter((u) => u.id !== targetUserId);
             await this.userRepository.save(user);
         }
+    }
+
+    async getUnfollowedUsers(userId: number) {
+        const followedUserIds = await this.getFollowedUserIds(userId);
+        return await this.userRepository.find({
+            where: {
+                id: Not(In(followedUserIds)),
+            },
+        });
+    }
+    private async getFollowedUserIds(userId: number): Promise<number[]> {
+        const user = await this.userRepository.findOne({
+            where: { id: userId },
+            relations: ["following"],
+        });
+
+        return user ? user.following.map((followedUser) => followedUser.id) : [];
     }
 }

@@ -177,4 +177,25 @@ export class UserController {
             next(error);
         }
     }
+
+    async getUnfollowedUsers(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.params.id;
+            if (isNaN(Number(userId))) {
+                next(createHttpError(400, "Invalid url param!"));
+                return;
+            }
+
+            const unfollowedUsers = await this.userService.getUnfollowedUsers(Number(userId));
+            if (!unfollowedUsers) {
+                next(createHttpError(400, "User does not exist!"));
+                return;
+            }
+
+            this.logger.info("Unfollowed users have been fetched", { id: userId });
+            res.json(unfollowedUsers);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
