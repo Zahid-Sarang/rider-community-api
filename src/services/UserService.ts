@@ -143,8 +143,20 @@ export class UserService {
         const followedUserIds = await this.getFollowedUserIds(userId);
         return await this.userRepository.find({
             where: {
-                id: Not(In(followedUserIds)),
+                id: Not(In([...followedUserIds, userId])),
             },
+            relations: [
+                "itineraries",
+                "memories",
+                "likes",
+                "comments",
+                "followers",
+                "following",
+                "following.itineraries",
+                "following.memories",
+                "followers.itineraries",
+                "followers.memories",
+            ],
         });
     }
     private async getFollowedUserIds(userId: number): Promise<number[]> {
