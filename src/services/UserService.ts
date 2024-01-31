@@ -53,7 +53,18 @@ export class UserService {
     async findById(id: number) {
         return await this.userRepository.findOne({
             where: { id },
-            relations: ["itineraries", "memories", "likes", "comments", "followers", "following"],
+            relations: [
+                "itineraries",
+                "memories",
+                "likes",
+                "comments",
+                "followers",
+                "following",
+                "following.itineraries",
+                "following.memories",
+                "followers.itineraries",
+                "followers.memories",
+            ],
         });
     }
 
