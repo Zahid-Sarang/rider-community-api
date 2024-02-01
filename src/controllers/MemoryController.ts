@@ -132,7 +132,6 @@ export class MemoryController {
             }
 
             const { userId, memoryId } = req.body;
-            console.log(userId, memoryId);
             if (isNaN(Number(memoryId)) || isNaN(Number(userId))) {
                 next(createHttpError(400, "Invalid url param!"));
                 return;

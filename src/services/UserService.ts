@@ -56,8 +56,7 @@ export class UserService {
             relations: [
                 "itineraries",
                 "memories",
-                "likes",
-                "comments",
+                "likes.user",
                 "followers",
                 "following",
                 "following.itineraries",
