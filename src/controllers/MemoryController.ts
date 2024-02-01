@@ -123,4 +123,24 @@ export class MemoryController {
             next(error);
         }
     }
+
+    async addAndRemoveLikes(req: Request, res: Response, next: NextFunction) {
+        try {
+            const validationError = validationResult(req);
+            if (!validationError.isEmpty()) {
+                return res.status(400).json({ errors: validationError.array() });
+            }
+
+            const { userId, memoryId } = req.body;
+            console.log(userId, memoryId);
+            if (isNaN(Number(memoryId)) || isNaN(Number(userId))) {
+                next(createHttpError(400, "Invalid url param!"));
+                return;
+            }
+            await this.memoryService.addAndRemoveLikes(Number(userId), Number(memoryId));
+            res.json({ message: "Liked!" });
+        } catch (error) {
+            next(error);
+        }
+    }
 }
