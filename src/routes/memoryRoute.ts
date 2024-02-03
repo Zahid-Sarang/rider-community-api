@@ -67,4 +67,12 @@ memoryRoute.put(
         memoryController.addAndRemoveLikes(req, res, next);
     },
 );
+
+memoryRoute.get(
+    "/:id/userCanSee",
+    authMiddleware as RequestHandler,
+    (req: Request, res: Response, next: NextFunction) => {
+        memoryController.memoriesForUser(req, res, next);
+    },
+);
 export default memoryRoute;

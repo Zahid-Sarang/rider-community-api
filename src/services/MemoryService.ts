@@ -130,4 +130,14 @@ export class MemoryService {
             throw error;
         }
     }
+
+    async memoriesUserCanSee(userId: number) {
+        const queryBuilder = this.memoryRepository.createQueryBuilder("memory");
+        const result = queryBuilder
+            .leftJoinAndSelect("memory.user", "user")
+            .leftJoin("user.followers", "follower", "follower.id = :userId", { userId })
+            .where("memory.user = :userId OR follower.id IS NOT NULL", { userId })
+            .orderBy("memory.createdAt", "DESC");
+        return result.getMany();
+    }
 }

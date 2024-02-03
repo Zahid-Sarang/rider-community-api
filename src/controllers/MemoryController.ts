@@ -142,4 +142,21 @@ export class MemoryController {
             next(error);
         }
     }
+
+    async memoriesForUser(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.params.id;
+
+            if (isNaN(Number(userId))) {
+                next(createHttpError(400, "Invalid url param!"));
+                return;
+            }
+
+            const usersMemories = await this.memoryService.memoriesUserCanSee(Number(userId));
+
+            res.json(usersMemories);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
