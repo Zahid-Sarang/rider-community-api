@@ -120,3 +120,13 @@ export interface UserRelationshipData {
 export interface UserRelationshipRequestData extends Request {
     body: UserRelationshipData;
 }
+
+export interface CommentData {
+    text: string;
+    userId: number;
+    memoryId: number;
+}
+
+export interface CommentRequestData extends Request {
+    body: CommentData;
+}

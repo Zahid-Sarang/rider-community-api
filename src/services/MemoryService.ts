@@ -4,7 +4,7 @@ import { Comment } from "../entity/Comment";
 import { Like } from "../entity/Like";
 import { Memories } from "../entity/Memory";
 import { User } from "../entity/User";
-import { MemoryData, UpdateMemoriesData } from "../types";
+import { CommentData, MemoryData, UpdateMemoriesData } from "../types";
 import { CloudinaryService } from "./Cloudinary";
 
 export class MemoryService {
@@ -41,7 +41,7 @@ export class MemoryService {
             where: {
                 id,
             },
-            relations: ["user", "likes", "comments", "likes.user"],
+            relations: ["user", "likes", "comments", "likes.user", "comments.user"],
         });
     }
 
@@ -64,8 +64,7 @@ export class MemoryService {
                 await this.cloudinaryService.destroyFile(imageUrl);
             }
             return await this.memoryRepository.delete(id);
-        } catch (err) {
-            const error = createHttpError(500, "Failed to delete Memory");
+        } catch (error) {
             throw error;
         }
     }
@@ -131,13 +130,47 @@ export class MemoryService {
         }
     }
 
+    async addComments({ text, userId, memoryId }: CommentData) {
+        try {
+            return await this.commentRepository.save({
+                text,
+                user: { id: userId },
+                memory: { id: memoryId },
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async memoriesUserCanSee(userId: number) {
         const queryBuilder = this.memoryRepository.createQueryBuilder("memory");
         const result = queryBuilder
+            // Join memory's user
             .leftJoinAndSelect("memory.user", "user")
+            // Left join likes with associated user information
+            .leftJoinAndSelect("memory.likes", "likes")
+            .leftJoin("likes.user", "likedUser")
+            // Specify the fields you want to select for the liked user
+            .addSelect([
+                "likedUser.id",
+                "likedUser.userName",
+                "likedUser.firstName",
+                "likedUser.lastName",
+                "likedUser.email",
+                "likedUser.profilePhoto",
+                "likedUser.coverPhoto",
+                "likedUser.bio",
+                "likedUser.location",
+                "likedUser.bikeDetails",
+            ])
+            // Left join comments
+            .leftJoinAndSelect("memory.comments", "comments")
+            // Left join user's followers
             .leftJoin("user.followers", "follower", "follower.id = :userId", { userId })
+            // Filter memories based on user and followed users
             .where("memory.user = :userId OR follower.id IS NOT NULL", { userId })
             .orderBy("memory.createdAt", "DESC");
+
         return result.getMany();
     }
 }

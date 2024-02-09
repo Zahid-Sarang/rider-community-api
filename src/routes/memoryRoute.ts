@@ -10,7 +10,9 @@ import authMiddleware from "../middlewares/authMiddleware";
 import { upload } from "../middlewares/multerMiddleware";
 import { CloudinaryService } from "../services/Cloudinary";
 import { MemoryService } from "../services/MemoryService";
-import likesCommentsValidators from "../validators/likes-comments-validators";
+import { UserService } from "../services/UserService";
+import commentValidator from "../validators/comment-validator";
+import likesValidators from "../validators/likes-validators";
 import memoryValidator from "../validators/memory-validator";
 import updateMemoryValidators from "../validators/update-memory-validators";
 
@@ -27,7 +29,13 @@ const memoryService = new MemoryService(
     likesRepository,
     commentsRepository,
 );
-const memoryController = new MemoryController(memoryService, logger, cloudinaryService);
+const userService = new UserService(userRepository);
+const memoryController = new MemoryController(
+    memoryService,
+    logger,
+    cloudinaryService,
+    userService,
+);
 
 memoryRoute.post(
     "/",
@@ -61,10 +69,19 @@ memoryRoute.delete("/:id", authMiddleware as RequestHandler, (req, res, next) =>
 
 memoryRoute.put(
     "/addLikes",
-    likesCommentsValidators,
+    likesValidators,
     authMiddleware as RequestHandler,
     (req: Request, res: Response, next: NextFunction) => {
         memoryController.addAndRemoveLikes(req, res, next);
+    },
+);
+
+memoryRoute.put(
+    "/addComment",
+    commentValidator,
+    authMiddleware,
+    (req: Request, res: Response, next: NextFunction) => {
+        memoryController.AddcommentToMemory(req, res, next);
     },
 );
 

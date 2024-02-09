@@ -4,13 +4,15 @@ import createHttpError from "http-errors";
 import { Logger } from "winston";
 import { CloudinaryService } from "../services/Cloudinary";
 import { MemoryService } from "../services/MemoryService";
-import { MemoryRequestData, UpdateMemoriesRequestData } from "../types";
+import { UserService } from "../services/UserService";
+import { CommentRequestData, MemoryRequestData, UpdateMemoriesRequestData } from "../types";
 
 export class MemoryController {
     constructor(
         private memoryService: MemoryService,
         private logger: Logger,
         private cloudinaryService: CloudinaryService,
+        private userService: UserService,
     ) {}
 
     async createMemories(req: MemoryRequestData, res: Response, next: NextFunction) {
@@ -138,6 +140,30 @@ export class MemoryController {
             }
             await this.memoryService.addAndRemoveLikes(Number(userId), Number(memoryId));
             res.json({ message: "Liked!" });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async AddcommentToMemory(req: CommentRequestData, res: Response, next: NextFunction) {
+        try {
+            const validationError = validationResult(req);
+            if (!validationError.isEmpty()) {
+                return res.status(400).json({ errors: validationError.array() });
+            }
+            const { text, userId, memoryId } = req.body;
+            const isUserExist = await this.userService.findById(Number(userId));
+            if (!isUserExist) {
+                next(createHttpError(400, "User not exist!"));
+                return;
+            }
+            const isMemoryExist = await this.memoryService.getMemoryById(Number(memoryId));
+            if (!isMemoryExist) {
+                next(createHttpError(400, "Memory not exist!"));
+                return;
+            }
+            await this.memoryService.addComments({ text, userId, memoryId });
+            res.json({ message: "Comment Added!" });
         } catch (error) {
             next(error);
         }
