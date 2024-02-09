@@ -53,10 +53,7 @@ export class MemoryService {
                 },
             });
             if (!memory) {
-                const error = createHttpError(
-                    400,
-                    "Memory with ID ${itineraryId} not found.nerary!",
-                );
+                const error = createHttpError(400, `Memory with ID ${id} not found.nerary!`);
                 throw error;
             }
             const imageUrl = memory?.image;
@@ -137,6 +134,23 @@ export class MemoryService {
                 user: { id: userId },
                 memory: { id: memoryId },
             });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async deleteComment(commentId: number) {
+        try {
+            const isCommentExist = await this.commentRepository.findOne({
+                where: {
+                    id: commentId,
+                },
+            });
+            if (!isCommentExist) {
+                const error = createHttpError(400, "comment not found!");
+                throw error;
+            }
+            return await this.commentRepository.delete(commentId);
         } catch (error) {
             throw error;
         }

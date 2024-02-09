@@ -145,6 +145,19 @@ export class MemoryController {
         }
     }
 
+    async destoryComment(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id: commentId } = req.params;
+            if (isNaN(Number(commentId))) {
+                return next(createHttpError(400, "invalid param!"));
+            }
+            await this.memoryService.deleteComment(Number(commentId));
+            res.json({ message: "comment deleted!" });
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async AddcommentToMemory(req: CommentRequestData, res: Response, next: NextFunction) {
         try {
             const validationError = validationResult(req);

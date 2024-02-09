@@ -85,6 +85,14 @@ memoryRoute.put(
     },
 );
 
+memoryRoute.delete(
+    "/removeComment/:id",
+    authMiddleware,
+    (req: Request, res: Response, next: NextFunction) => {
+        memoryController.destoryComment(req, res, next);
+    },
+);
+
 memoryRoute.get(
     "/:id/userCanSee",
     authMiddleware as RequestHandler,
