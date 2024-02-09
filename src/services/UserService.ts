@@ -57,6 +57,7 @@ export class UserService {
                 "itineraries",
                 "memories",
                 "likes.user",
+                "comments.user",
                 "followers",
                 "following",
                 "following.itineraries",

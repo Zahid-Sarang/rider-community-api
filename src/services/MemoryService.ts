@@ -32,7 +32,7 @@ export class MemoryService {
 
     async getAllMemories() {
         return this.memoryRepository.find({
-            relations: ["user", "likes", "comments", "likes.user"],
+            relations: ["user", "likes", "comments", "likes.user", "comments.user"],
         });
     }
 
@@ -158,33 +158,18 @@ export class MemoryService {
 
     async memoriesUserCanSee(userId: number) {
         const queryBuilder = this.memoryRepository.createQueryBuilder("memory");
-        const result = queryBuilder
-            // Join memory's user
-            .leftJoinAndSelect("memory.user", "user")
-            // Left join likes with associated user information
-            .leftJoinAndSelect("memory.likes", "likes")
-            .leftJoin("likes.user", "likedUser")
-            // Specify the fields you want to select for the liked user
-            .addSelect([
-                "likedUser.id",
-                "likedUser.userName",
-                "likedUser.firstName",
-                "likedUser.lastName",
-                "likedUser.email",
-                "likedUser.profilePhoto",
-                "likedUser.coverPhoto",
-                "likedUser.bio",
-                "likedUser.location",
-                "likedUser.bikeDetails",
-            ])
-            // Left join comments
-            .leftJoinAndSelect("memory.comments", "comments")
-            // Left join user's followers
-            .leftJoin("user.followers", "follower", "follower.id = :userId", { userId })
-            // Filter memories based on user and followed users
-            .where("memory.user = :userId OR follower.id IS NOT NULL", { userId })
-            .orderBy("memory.createdAt", "DESC");
 
-        return result.getMany();
+        const result = await queryBuilder
+            .leftJoinAndSelect("memory.user", "user")
+            .leftJoinAndSelect("memory.likes", "likes")
+            .leftJoinAndSelect("likes.user", "likedUser")
+            .leftJoinAndSelect("memory.comments", "comments")
+            .leftJoinAndSelect("comments.user", "commentUser")
+            .leftJoin("user.followers", "follower", "follower.id = :userId", { userId })
+            .where("memory.user = :userId OR follower.id IS NOT NULL", { userId })
+            .orderBy("memory.createdAt", "DESC")
+            .getMany();
+
+        return result;
     }
 }
