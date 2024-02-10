@@ -1,6 +1,6 @@
-import { In, Not, Repository } from "typeorm";
+import { Brackets, In, Not, Repository } from "typeorm";
 import { User } from "../entity/User";
-import { LimitedUserData, UserData, UserRelationshipData } from "../types";
+import { LimitedUserData, QueryParams, UserData, UserRelationshipData } from "../types";
 import bcrypt from "bcryptjs";
 import createHttpError from "http-errors";
 
@@ -68,10 +68,36 @@ export class UserService {
         });
     }
 
-    async getAll() {
-        return await this.userRepository.find({
-            relations: ["itineraries", "memories", "likes", "comments", "followers", "following"],
-        });
+    async getAll(validatedQuery: QueryParams) {
+        try {
+            const queryBuilder = this.userRepository.createQueryBuilder("user");
+            if (validatedQuery.q) {
+                const searchTerm = `%${validatedQuery.q}%`;
+                queryBuilder.where(
+                    new Brackets((db) => {
+                        db.where("CONCAT(user.firstName, ' ', user.lastName) ILike :q", {
+                            q: searchTerm,
+                        });
+                    }),
+                );
+
+                const result = await queryBuilder.getManyAndCount();
+                return result;
+            } else {
+                return await this.userRepository.findAndCount({
+                    relations: [
+                        "itineraries",
+                        "memories",
+                        "likes",
+                        "comments",
+                        "followers",
+                        "following",
+                    ],
+                });
+            }
+        } catch (error) {
+            throw error;
+        }
     }
 
     async findByUserName(userName: string) {

@@ -10,6 +10,7 @@ import { upload } from "../middlewares/multerMiddleware";
 import { CloudinaryService } from "../services/Cloudinary";
 import { UserService } from "../services/UserService";
 import { UpdateUserRequest } from "../types";
+import searchValidators from "../validators/search-validators";
 import updateUserValidators from "../validators/update-user-validators";
 
 const userRouter = express.Router();
@@ -21,6 +22,7 @@ const userContoller = new UserController(userService, logger, cloudinaryService)
 userRouter.get(
     "/",
     authMiddleware as RequestHandler,
+    searchValidators,
     (req: Request, res: Response, next: NextFunction) =>
         userContoller.getUsers(req, res, next) as unknown as RequestHandler,
 );

@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { validationResult } from "express-validator";
+import { matchedData, validationResult } from "express-validator";
 import createHttpError from "http-errors";
 import { Logger } from "winston";
 import { CloudinaryService } from "../services/Cloudinary";
 import { UserService } from "../services/UserService";
-import { UpdateUserRequest, UserRelationshipRequestData } from "../types";
+import { QueryParams, UpdateUserRequest, UserRelationshipRequestData } from "../types";
 import fs from "fs";
 
 export class UserController {
@@ -14,10 +14,14 @@ export class UserController {
         private cloudinaryService: CloudinaryService,
     ) {}
     async getUsers(req: Request, res: Response, next: NextFunction) {
+        const validatedQuery = matchedData(req, { onlyValidData: true });
         try {
-            const userList = await this.userService.getAll();
+            const [usersList, count] = await this.userService.getAll(validatedQuery as QueryParams);
             this.logger.info("All users have been fetched");
-            res.json(userList);
+            res.json({
+                total: count,
+                data: usersList,
+            });
         } catch (error) {
             next(error);
         }

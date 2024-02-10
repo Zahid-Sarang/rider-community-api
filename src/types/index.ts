@@ -130,3 +130,7 @@ export interface CommentData {
 export interface CommentRequestData extends Request {
     body: CommentData;
 }
+
+export interface QueryParams {
+    q: string;
+}
