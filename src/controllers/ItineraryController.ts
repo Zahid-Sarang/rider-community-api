@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { validationResult } from "express-validator";
+import { matchedData, validationResult } from "express-validator";
 import createHttpError from "http-errors";
 import { Logger } from "winston";
 import { CloudinaryService } from "../services/Cloudinary";
 import { ItineraryService } from "../services/ItineraryService";
 import { UserService } from "../services/UserService";
-import { ItineraryRequestData, UpdateItineriesRequestData } from "../types";
+import { ItineraryRequestData, QueryParams, UpdateItineriesRequestData } from "../types";
 
 export class ItineraryController {
     constructor(
@@ -122,9 +122,15 @@ export class ItineraryController {
     }
 
     async getAllItinerary(req: Request, res: Response, next: NextFunction) {
+        const validatedQuery = matchedData(req, { onlyValidData: true });
         try {
-            const itineraries = await this.itineraryService.getItinerary();
-            res.json(itineraries);
+            const [itineraries, count] = await this.itineraryService.getItinerary(
+                validatedQuery as QueryParams,
+            );
+            res.json({
+                total: count,
+                data: itineraries,
+            });
         } catch (error) {
             next(error);
         }

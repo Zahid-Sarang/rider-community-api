@@ -1,8 +1,8 @@
 import createHttpError from "http-errors";
-import { Repository } from "typeorm";
+import { Brackets, Repository } from "typeorm";
 import { Itinerary } from "../entity/Itinerary";
 import { User } from "../entity/User";
-import { ItineraryData, UpdateItineraryData } from "../types";
+import { ItineraryData, QueryParams, UpdateItineraryData } from "../types";
 import { CloudinaryService } from "./Cloudinary";
 
 export class ItineraryService {
@@ -71,10 +71,32 @@ export class ItineraryService {
         }
     }
 
-    async getItinerary() {
-        return this.itineraryRepository.find({
-            relations: ["joinedUsers", "user"],
-        });
+    async getItinerary(validatedQuery: QueryParams) {
+        try {
+            const queryBuilder = this.itineraryRepository.createQueryBuilder("itinerary");
+            if (validatedQuery.q) {
+                const searchTerm = `%${validatedQuery.q}%`;
+                queryBuilder.where(
+                    new Brackets((db) => {
+                        db.where(
+                            "CONCAT(itinerary.tripTitle, ' ', itinerary.startPoint) ILike :q",
+                            {
+                                q: searchTerm,
+                            },
+                        ).orWhere("itinerary.endingPoint ILike :q", { q: searchTerm });
+                    }),
+                );
+
+                const result = await queryBuilder.getManyAndCount();
+                return result;
+            } else {
+                return this.itineraryRepository.findAndCount({
+                    relations: ["joinedUsers", "user"],
+                });
+            }
+        } catch (error) {
+            throw error;
+        }
     }
 
     async getitineraryById(id: number) {

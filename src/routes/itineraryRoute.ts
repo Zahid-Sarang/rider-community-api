@@ -10,6 +10,7 @@ import { CloudinaryService } from "../services/Cloudinary";
 import { ItineraryService } from "../services/ItineraryService";
 import { UserService } from "../services/UserService";
 import itineraryValidators from "../validators/itinerary-validators";
+import searchValidators from "../validators/search-validators";
 import updateItineriesValidators from "../validators/update-itineries-validators";
 
 const itineraryRouter = express.Router();
@@ -42,6 +43,7 @@ itineraryRouter.post(
 itineraryRouter.get(
     "/",
     authMiddleware as RequestHandler,
+    searchValidators,
     (req: Request, res: Response, next: NextFunction) =>
         itineraryController.getAllItinerary(req, res, next),
 );
