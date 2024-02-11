@@ -14,6 +14,7 @@ import { UserService } from "../services/UserService";
 import commentValidator from "../validators/comment-validator";
 import likesValidators from "../validators/likes-validators";
 import memoryValidator from "../validators/memory-validator";
+import searchValidators from "../validators/search-validators";
 import updateMemoryValidators from "../validators/update-memory-validators";
 
 const memoryRoute = express.Router();
@@ -46,13 +47,22 @@ memoryRoute.post(
         memoryController.createMemories(req, res, next),
 );
 
-memoryRoute.get("/", authMiddleware as RequestHandler, (req, res, next) => {
-    memoryController.getMemories(req, res, next);
-});
+memoryRoute.get(
+    "/",
+    authMiddleware as RequestHandler,
+    searchValidators,
+    (req: Request, res: Response, next: NextFunction) => {
+        memoryController.getMemories(req, res, next);
+    },
+);
 
-memoryRoute.get("/:id", authMiddleware as RequestHandler, (req, res, next) => {
-    memoryController.getOneMemory(req, res, next);
-});
+memoryRoute.get(
+    "/:id",
+    authMiddleware as RequestHandler,
+    (req: Request, res: Response, next: NextFunction) => {
+        memoryController.getOneMemory(req, res, next);
+    },
+);
 memoryRoute.patch(
     "/:id",
     updateMemoryValidators,
@@ -63,9 +73,13 @@ memoryRoute.patch(
     },
 );
 
-memoryRoute.delete("/:id", authMiddleware as RequestHandler, (req, res, next) => {
-    memoryController.deleteMemory(req, res, next);
-});
+memoryRoute.delete(
+    "/:id",
+    authMiddleware as RequestHandler,
+    (req: Request, res: Response, next: NextFunction) => {
+        memoryController.deleteMemory(req, res, next);
+    },
+);
 
 memoryRoute.put(
     "/addLikes",

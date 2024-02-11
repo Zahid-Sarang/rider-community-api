@@ -1,11 +1,16 @@
 import { NextFunction, Request, Response } from "express";
-import { validationResult } from "express-validator";
+import { matchedData, validationResult } from "express-validator";
 import createHttpError from "http-errors";
 import { Logger } from "winston";
 import { CloudinaryService } from "../services/Cloudinary";
 import { MemoryService } from "../services/MemoryService";
 import { UserService } from "../services/UserService";
-import { CommentRequestData, MemoryRequestData, UpdateMemoriesRequestData } from "../types";
+import {
+    CommentRequestData,
+    MemoryRequestData,
+    QueryParams,
+    UpdateMemoriesRequestData,
+} from "../types";
 
 export class MemoryController {
     constructor(
@@ -44,9 +49,15 @@ export class MemoryController {
     }
 
     async getMemories(req: Request, res: Response, next: NextFunction) {
+        const validatedQuery = matchedData(req, { onlyValidData: true });
         try {
-            const memories = await this.memoryService.getAllMemories();
-            res.json(memories);
+            const [memories, count] = await this.memoryService.getAllMemories(
+                validatedQuery as QueryParams,
+            );
+            res.json({
+                total: count,
+                data: memories,
+            });
         } catch (error) {
             next(error);
         }

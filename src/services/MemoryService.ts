@@ -1,10 +1,10 @@
 import createHttpError from "http-errors";
-import { Repository } from "typeorm";
+import { Brackets, Repository } from "typeorm";
 import { Comment } from "../entity/Comment";
 import { Like } from "../entity/Like";
 import { Memories } from "../entity/Memory";
 import { User } from "../entity/User";
-import { CommentData, MemoryData, UpdateMemoriesData } from "../types";
+import { CommentData, MemoryData, QueryParams, UpdateMemoriesData } from "../types";
 import { CloudinaryService } from "./Cloudinary";
 
 export class MemoryService {
@@ -30,10 +30,29 @@ export class MemoryService {
         }
     }
 
-    async getAllMemories() {
-        return this.memoryRepository.find({
-            relations: ["user", "likes", "comments", "likes.user", "comments.user"],
-        });
+    async getAllMemories(validatedQuery: QueryParams) {
+        try {
+            const queryBuilder = this.memoryRepository.createQueryBuilder("memory");
+            if (validatedQuery.q) {
+                const searchTerm = `%${validatedQuery.q}%`;
+                queryBuilder.where(
+                    new Brackets((db) => {
+                        db.where("CONCAT(memory.title,' ',memory.description) ILike :q", {
+                            q: searchTerm,
+                        });
+                    }),
+                );
+
+                const result = await queryBuilder.getManyAndCount();
+                return result;
+            } else {
+                return this.memoryRepository.findAndCount({
+                    relations: ["user", "likes", "comments", "likes.user", "comments.user"],
+                });
+            }
+        } catch (error) {
+            throw error;
+        }
     }
 
     async getMemoryById(id: number) {
