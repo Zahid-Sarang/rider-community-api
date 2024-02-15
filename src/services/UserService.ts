@@ -60,10 +60,7 @@ export class UserService {
                 "comments.user",
                 "followers",
                 "following",
-                "following.itineraries",
-                "following.memories",
-                "followers.itineraries",
-                "followers.memories",
+                "joinedItineraries",
             ],
         });
     }

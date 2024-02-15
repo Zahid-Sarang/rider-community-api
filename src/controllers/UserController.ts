@@ -67,19 +67,6 @@ export class UserController {
         const profileLocalPath = files?.profilePhoto?.[0]?.path;
         const coverLocalPath = files?.coverPhoto?.[0]?.path;
 
-        const userNameExist = await this.userService.findByUserName(userName);
-
-        if (userNameExist) {
-            if (profileLocalPath) {
-                fs.unlinkSync(profileLocalPath);
-            }
-            if (coverLocalPath) {
-                fs.unlinkSync(coverLocalPath);
-            }
-            next(createHttpError(400, "UserName Already Taken!"));
-            return;
-        }
-
         // upload profile photo on cloudinary
         const profilePhoto = profileLocalPath
             ? await this.cloudinaryService.uploadFile(profileLocalPath)
