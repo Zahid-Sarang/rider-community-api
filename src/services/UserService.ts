@@ -1,6 +1,12 @@
 import { Brackets, In, Not, Repository } from "typeorm";
 import { User } from "../entity/User";
-import { LimitedUserData, QueryParams, UserData, UserRelationshipData } from "../types";
+import {
+    LimitedUserData,
+    QueryParams,
+    UserData,
+    UserQueryParams,
+    UserRelationshipData,
+} from "../types";
 import bcrypt from "bcryptjs";
 import createHttpError from "http-errors";
 
@@ -161,15 +167,26 @@ export class UserService {
             await this.userRepository.save(user);
         }
     }
-
-    async getUnfollowedUsers(userId: number) {
+    async getUnfollowedUsers(userId: number, validatedQuery: UserQueryParams) {
         const followedUserIds = await this.getFollowedUserIds(userId);
-        return await this.userRepository.find({
-            where: {
-                id: Not(In([...followedUserIds, userId])),
-            },
-        });
+        const offset = (validatedQuery.currentPage - 1) * validatedQuery.perPage;
+
+        const queryBuilder = this.userRepository.createQueryBuilder("user");
+
+        if (followedUserIds.length > 0) {
+            queryBuilder.where("user.id NOT IN (:...ids)", { ids: [...followedUserIds, userId] });
+        } else {
+            queryBuilder.where("user.id != :userId", { userId });
+        }
+
+        const users = await queryBuilder
+            .skip(offset)
+            .take(validatedQuery.perPage)
+            .getManyAndCount();
+
+        return users;
     }
+
     private async getFollowedUserIds(userId: number): Promise<number[]> {
         const user = await this.userRepository.findOne({
             where: { id: userId },

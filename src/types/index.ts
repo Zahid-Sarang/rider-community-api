@@ -134,3 +134,8 @@ export interface CommentRequestData extends Request {
 export interface QueryParams {
     q: string;
 }
+
+export interface UserQueryParams {
+    perPage: number;
+    currentPage: number;
+}

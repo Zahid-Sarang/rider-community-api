@@ -4,7 +4,12 @@ import createHttpError from "http-errors";
 import { Logger } from "winston";
 import { CloudinaryService } from "../services/Cloudinary";
 import { UserService } from "../services/UserService";
-import { QueryParams, UpdateUserRequest, UserRelationshipRequestData } from "../types";
+import {
+    QueryParams,
+    UpdateUserRequest,
+    UserQueryParams,
+    UserRelationshipRequestData,
+} from "../types";
 import fs from "fs";
 
 export class UserController {
@@ -97,7 +102,7 @@ export class UserController {
                 location,
                 bikeDetails,
             });
-            res.json({ message: "user updated!" });
+            res.json({ message: "Profile updated!" });
         } catch (error) {
             next(error);
         }
@@ -170,6 +175,7 @@ export class UserController {
     }
 
     async getUnfollowedUsers(req: Request, res: Response, next: NextFunction) {
+        const validatedQuery = matchedData(req, { onlyValidData: true });
         try {
             const userId = req.params.id;
             if (isNaN(Number(userId))) {
@@ -177,14 +183,20 @@ export class UserController {
                 return;
             }
 
-            const unfollowedUsers = await this.userService.getUnfollowedUsers(Number(userId));
+            const [unfollowedUsers, count] = await this.userService.getUnfollowedUsers(
+                Number(userId),
+                validatedQuery as UserQueryParams,
+            );
             if (!unfollowedUsers) {
                 next(createHttpError(400, "User does not exist!"));
                 return;
             }
 
             this.logger.info("Unfollowed users have been fetched", { id: userId });
-            res.json(unfollowedUsers);
+            res.json({
+                total: count,
+                data: unfollowedUsers,
+            });
         } catch (error) {
             next(error);
         }

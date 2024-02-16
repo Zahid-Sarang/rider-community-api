@@ -10,6 +10,7 @@ import { upload } from "../middlewares/multerMiddleware";
 import { CloudinaryService } from "../services/Cloudinary";
 import { UserService } from "../services/UserService";
 import { UpdateUserRequest } from "../types";
+import paginationValidators from "../validators/pagination-validators";
 import searchValidators from "../validators/search-validators";
 import updateUserValidators from "../validators/update-user-validators";
 
@@ -78,6 +79,7 @@ userRouter.post(
 userRouter.get(
     "/:id/unfollowedUsers",
     authMiddleware,
+    paginationValidators,
     (req: Request, res: Response, next: NextFunction) =>
         userContoller.getUnfollowedUsers(req, res, next),
 );
