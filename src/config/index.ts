@@ -15,6 +15,7 @@ const {
     CLOUD_NAME,
     API_KEY,
     API_SECRET,
+    PRIVATE_KEY,
 } = process.env;
 
 export const Config = {
@@ -30,4 +31,5 @@ export const Config = {
     CLOUD_NAME,
     API_KEY,
     API_SECRET,
+    PRIVATE_KEY,
 };
