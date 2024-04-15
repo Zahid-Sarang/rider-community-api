@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
 import { Config } from "../config";
@@ -25,7 +26,6 @@ export class CloudinaryService {
             return response;
         } catch (err) {
             fs.unlinkSync(localFilePath);
-            console.error(err);
             const error = createHttpError(400, "Failed to upload file on server, try Again!");
             throw error;
         }
@@ -34,11 +34,9 @@ export class CloudinaryService {
     async destroyFile(imageUrl: string) {
         const cloudinaryUrlParts = imageUrl.split("/");
         const filenameWithExtension = cloudinaryUrlParts[cloudinaryUrlParts.length - 1];
-        console.log(filenameWithExtension);
 
         // If you specifically want the filename without the extension, you can further split by '.'
         const publicId = filenameWithExtension.split(".")[0];
-        console.log(publicId);
 
         await cloudinary.uploader.destroy(publicId, (error, result) => {
             if (error) {

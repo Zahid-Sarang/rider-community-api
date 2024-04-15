@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import { Brackets, In, Not, Repository } from "typeorm";
 import { User } from "../entity/User";
 import {

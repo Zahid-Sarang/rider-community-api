@@ -10,7 +10,6 @@ import {
     UserQueryParams,
     UserRelationshipRequestData,
 } from "../types";
-import fs from "fs";
 
 export class UserController {
     constructor(
@@ -27,6 +26,7 @@ export class UserController {
                 total: count,
                 data: usersList,
             });
+           
         } catch (error) {
             next(error);
         }
