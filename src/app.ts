@@ -8,11 +8,12 @@ import cookieParser from "cookie-parser";
 import userRouter from "./routes/userRoute";
 import itineraryRouter from "./routes/itineraryRoute";
 import memoryRouter from "./routes/memoryRoute";
+import { Config } from "./config";
 const app = express();
 app.use(express.static("public"));
 const corsOptions = {
     credentials: true,
-    origin: "http://localhost:5173",
+    origin: Config.MAIN_DOMAIN,
 };
 app.use(cors(corsOptions));
 app.use(cookieParser());
