@@ -79,6 +79,8 @@ public
 .env.dev
 .env.test
 .env.prod
+.env.migration
+
 
 
 # parcel-bundler cache (https://parceljs.org/)
