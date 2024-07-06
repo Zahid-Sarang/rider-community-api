@@ -7,6 +7,7 @@ import { TokenService } from "../services/TokenService";
 import { JwtPayload } from "jsonwebtoken";
 import { CredentialService } from "../services/CredentialService";
 import createHttpError from "http-errors";
+import { Config } from "../config";
 
 export class AuthController {
     constructor(
@@ -18,14 +19,14 @@ export class AuthController {
 
     private setCookies(res: Response, accessToken: string, refreshToken: string) {
         res.cookie("accessToken", accessToken, {
-            domain: "localhost",
+            domain: Config.MAIN_DOMAIN,
             sameSite: "strict",
             maxAge: 1000 * 60 * 60, // 60 minutes
             httpOnly: true,
         });
 
         res.cookie("refreshToken", refreshToken, {
-            domain: "localhost",
+            domain: Config.MAIN_DOMAIN,
             sameSite: "strict",
             maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
             httpOnly: true,
@@ -192,6 +193,4 @@ export class AuthController {
             return;
         }
     }
-
-    
 }

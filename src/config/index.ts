@@ -16,6 +16,7 @@ const {
     API_KEY,
     API_SECRET,
     PRIVATE_KEY,
+    MAIN_DOMAIN,
 } = process.env;
 
 export const Config = {
@@ -32,4 +33,5 @@ export const Config = {
     API_KEY,
     API_SECRET,
     PRIVATE_KEY,
+    MAIN_DOMAIN,
 };
