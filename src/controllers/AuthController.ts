@@ -20,14 +20,16 @@ export class AuthController {
     private setCookies(res: Response, accessToken: string, refreshToken: string) {
         res.cookie("accessToken", accessToken, {
             domain: Config.MAIN_DOMAIN,
-            sameSite: "strict",
+            sameSite: "none",
+            secure: true,
             maxAge: 1000 * 60 * 60, // 60 minutes
             httpOnly: true,
         });
 
         res.cookie("refreshToken", refreshToken, {
             domain: Config.MAIN_DOMAIN,
-            sameSite: "strict",
+            sameSite: "none",
+            secure: true,
             maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
             httpOnly: true,
         });
