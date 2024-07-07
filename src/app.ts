@@ -10,12 +10,15 @@ import itineraryRouter from "./routes/itineraryRoute";
 import memoryRouter from "./routes/memoryRoute";
 import { Config } from "./config";
 const app = express();
+const ALLOWED_DOMAINS = [Config.MAIN_DOMAIN!];
+
+app.use(
+    cors({
+        origin: ALLOWED_DOMAINS,
+        credentials: true,
+    }),
+);
 app.use(express.static("public"));
-const corsOptions = {
-    credentials: true,
-    origin: Config.MAIN_DOMAIN,
-};
-app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 
