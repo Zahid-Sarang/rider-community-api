@@ -10,7 +10,7 @@ import itineraryRouter from "./routes/itineraryRoute";
 import memoryRouter from "./routes/memoryRoute";
 import { Config } from "./config";
 const app = express();
-const ALLOWED_DOMAINS = [Config.MAIN_DOMAIN!];
+const ALLOWED_DOMAINS = [Config.CLIENT_URL!];
 
 app.use(
     cors({
