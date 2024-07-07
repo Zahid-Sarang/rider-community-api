@@ -14,8 +14,8 @@ const ALLOWED_DOMAINS = [Config.CLIENT_URL!];
 
 app.use(
     cors({
-        origin: ALLOWED_DOMAINS,
         credentials: true,
+        origin: ALLOWED_DOMAINS,
     }),
 );
 app.use(express.static("public"));
