@@ -187,8 +187,8 @@ export class AuthController {
             });
             this.logger.info("User has been logged out", { id: req.auth.sub });
 
-            res.clearCookie("accessToken");
-            res.clearCookie("refreshToken");
+            res.clearCookie("accessToken", { domain: Config.MAIN_DOMAIN });
+            res.clearCookie("refreshToken", { domain: Config.MAIN_DOMAIN });
             res.json({ message: "Sucessfully logged out" });
         } catch (err) {
             next(err);
