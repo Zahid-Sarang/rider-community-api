@@ -191,12 +191,14 @@ export class AuthController {
                 domain: Config.MAIN_DOMAIN,
                 secure: true,
                 httpOnly: true,
+                sameSite: "none",
                 path: "/",
             });
             res.clearCookie("refreshToken", {
                 domain: Config.MAIN_DOMAIN,
                 secure: true,
                 httpOnly: true,
+                sameSite: "none",
                 path: "/",
             });
             res.json({ message: "Sucessfully logged out" });
